@@ -17,37 +17,39 @@ const ResponseInsights = ({ today, currentWeek, formatDate, data }) => {
     )}`;
 
     return (
-        <div className="border border-violet-400 bg-violet-50 w-[60%] rounded-md shadow-[0px_0px_5px_rgba(0,0,0,0.2)] px-5 py-5 flex flex-col">
-            <h1 className="flex items-center justify-start space-x-2 text-xl font-semibold mb-5 ">
+        <div className="dark:bg-base-300 bg-white w-[60%] rounded-md shadow-[0px_0px_5px_rgba(0,0,0,0.2)] px-5 py-5 flex flex-col">
+            <h1 className="flex items-center justify-start dark:text-base-content custom-primary-txt space-x-2 text-xl font-semibold mb-5 ">
                 <MessageSquare />
                 <span>Response Insights</span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm custom-sec-txt">
                     &#40;{currentWeek}&#41;
                 </span>
             </h1>
 
             <div className="flex space-x-3">
-                <div className="stat rounded-md bg-white">
-                    <div className="stat-title text-sm font-medium text-black">
+
+                <div className="stat rounded-md dark:bg-base-100 bg-gray-100 ">
+                    <div className="stat-title text-sm font-medium custom-primary-txt">
                         Peak Hours
                     </div>
-                    <div className="stat-value text-black">{peakHours}</div>
-                    <div className="stat-desc text-gray-500">
+                    <div className="stat-value custom-primary-txt">{peakHours}</div>
+                    <div className="stat-desc custom-sec-txt">
                         Average {peakHoursAvgResponses} responses
                     </div>
                 </div>
-                <div className="stat rounded-md bg-white">
-                    <div className="stat-title text-sm font-medium text-black">
-                        Trend
+
+                <div className="stat rounded-md dark:bg-base-100 bg-gray-100">
+                    <div className="stat-title text-sm font-medium custom-primary-txt">
+                        Satisfaction Trend
                     </div>
                     <div
-                        className={`stat-value text-black flex items-center ${
-                            trendIsUP ? "text-green-600" : "text-red-600"
+                        className={`stat-value flex items-center ${
+                            trendIsUP ? "dark:text-green-400 text-green-600" : "text-red-600"
                         }`}
                     >
                         {trendIsUP ? (
                             <Triangle
-                                className="inline-block mr-1 text-green-500"
+                                className="inline-block mr-1 "
                                 size={20}
                                 fill="currentColor"
                             />
@@ -64,7 +66,7 @@ const ResponseInsights = ({ today, currentWeek, formatDate, data }) => {
                             {trend}
                         </span>
                     </div>
-                    <div className="stat-desc text-gray-500">
+                    <div className="stat-desc custom-sec-txt">
                         vs previous week &#40;{previousWeek}&#41;
                     </div>
                 </div>

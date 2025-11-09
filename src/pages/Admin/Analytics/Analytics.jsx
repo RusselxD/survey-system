@@ -2,7 +2,7 @@ import React from "react";
 
 const Analytics = () => {
     return (
-        <div>
+        <div className="p-0 sm:p-1 md:p-3 lg:p-8 dark:bg-base-100 bg-gray-100/70 flex-1 custom-primary-txt">
             <p>[▼ Date Range] [▼ Location] [▼ Service Type] [Apply]</p>
             <h3>NPS Distribution</h3>
             <p>[Detailed pie chart with segments]</p>

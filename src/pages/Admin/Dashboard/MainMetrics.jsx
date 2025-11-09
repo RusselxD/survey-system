@@ -11,7 +11,7 @@ const metrics = [
     {
         title: "Total Surveys",
         value: undefined,
-        desc: "Overall Total Surveys",
+        desc: "Total Number of Surveys",
         icon: ClipboardList,
         borderColor: "border-blue-500",
         iconColor: "text-blue-500",
@@ -19,39 +19,39 @@ const metrics = [
     {
         title: "Total Responses",
         value: undefined,
-        desc: "Overall Total Responses",
+        desc: "Total Number of Responses",
         icon: MessageSquare,
-        borderColor: "border-green-500",
-        iconColor: "text-green-500",
+        borderColor: "border-orange-500",
+        iconColor: "text-orange-500",
     },
     {
         title: "Avg. Satisfaction",
         value: undefined,
-        desc: "Overall Satisfaction Score",
+        desc: "Average of Ratings (1-5 stars)",
         icon: Smile,
-        borderColor: "border-red-700",
-        iconColor: "text-red-700",
+        borderColor: "border-green-500",
+        iconColor: "text-green-500",
     },
     {
         title: "Completion Rate",
         value: undefined,
         desc: "Overall Survey Completion Rate",
         icon: CircleCheck,
-        borderColor: "border-orange-500",
-        iconColor: "text-orange-500",
-    },
-    {
-        title: "Net Promoter Score",
-        value: undefined,
-        desc: "Overall Customer Loyalty Score",
-        icon: ThumbsUp,
         borderColor: "border-purple-500",
         iconColor: "text-purple-500",
     },
     {
-        title: "CSAT",
+        title: "NPS",
         value: undefined,
-        desc: "Overall Customer Satisfaction Score",
+        desc: "Overall Net Promoter Score",
+        icon: ThumbsUp,
+        borderColor: "border-cyan-500",
+        iconColor: "text-cyan-500",
+    },
+    {
+        title: "Customer Satisfaction (CSAT)",
+        value: undefined,
+        desc: "Satisfied customers (4-5 star ratings)",
         icon: Star,
         borderColor: "border-pink-500",
         iconColor: "text-pink-500",
@@ -69,7 +69,7 @@ const MainMetrics = ({ data }) => {
             {metrics.map((metric, i) => {
                 return (
                     <div
-                        className={`stat border-l-4 ${metric.borderColor} shadow-md bg-white rounded-md`}
+                        className={`stat dark:bg-base-300 bg-white border-l-[6px] px-5 ${metric.borderColor} shadow-md rounded-md`}
                         key={i}
                     >
                         <div className="stat-figure rounded-full ">
@@ -79,15 +79,15 @@ const MainMetrics = ({ data }) => {
                             />
                         </div>
 
-                        <div className="stat-title text-black">
+                        <div className="stat-title font-medium custom-primary-txt">
                             {metric.title}
                         </div>
-                        <div className="stat-value">{metric.value}</div>
-                        {metric.desc && (
-                            <div className="stat-desc text-gray-500">
-                                {metric.desc}
-                            </div>
-                        )}
+                        <div className="stat-value custom-primary-txt">
+                            {metric.value}
+                        </div>
+                        <div className="stat-desc custom-sec-txt">
+                            {metric.desc}
+                        </div>
                     </div>
                 );
             })}

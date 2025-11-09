@@ -5,11 +5,38 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AdminPage from "./pages/Admin/AdminPage.jsx";
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Navigate,
+} from "react-router-dom";
+import AdminPage from "./pages/Admin/AdminPage/AdminPage.jsx";
+import Dashboard from "./pages/Admin/Dashboard/Dashboard.jsx";
+import Analytics from "./pages/Admin/Analytics/Analytics.jsx";
+import Surveys from "./pages/Admin/Surveys/Surveys.jsx";
+import Responses from "./pages/Admin/Responses/Responses.jsx";
+import Users from "./pages/Admin/Users/Users.jsx";
+import Settings from "./pages/Admin/Settings/Settings.jsx";
+import SurveyPage from "./pages/Admin/Surveys/SurveyPage/SurveyPage.jsx";
 
 const router = createBrowserRouter([
-    { path: "/admin", element: <AdminPage /> },
+    {
+        path: "/admin",
+        element: <AdminPage />,
+        children: [
+            {
+                index: true,
+                element: <Navigate to="/admin/dashboard" replace />,
+            },
+            { path: "dashboard", element: <Dashboard /> },
+            { path: "analytics", element: <Analytics /> },
+            { path: "surveys", element: <Surveys /> },
+            { path: "surveys/:uuid", element: <SurveyPage /> },
+            { path: "responses", element: <Responses /> },
+            { path: "users", element: <Users /> },
+            { path: "settings", element: <Settings /> },
+        ],
+    },
 ]);
 
 createRoot(document.getElementById("root")).render(

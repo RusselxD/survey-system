@@ -1,73 +1,22 @@
 import DashboardSkeleton from "./DashboardSkeleton";
 import MainMetrics from "./MainMetrics";
 import ResponseInsights from "./ResponseInsights";
-import SatisfactionInsight from "./SatisfactionInsights";
+import SatisfactionInsights from "./SatisfactionInsights";
 import { SatisfactionTrendChart } from "./SatisfactionTrendChart";
 
 import { ArrowRight, BarChart3 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+    formatDate,
+    getCurrentWeek,
+    getMainMetricsData,
+    getSatisfactionInsightsData,
+    getResponseInsightsData,
+} from "../../../utils/api/dashboard.js";
 
-const formatDate = (date) => {
-    return date.toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-    });
-};
-
-const getCurrentWeek = () => {
-    const today = new Date();
-    const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(today.getDate() - 6);
-    const currentWeek = `${formatDate(sevenDaysAgo)} - ${formatDate(today)}`;
-    return { today, currentWeek };
-};
-
-const getMainMetricsData = () => {
-    // function call that fetches and returns main metrics data
-
-    // mock data
-    return {
-        totalSurveys: (2562262300).toLocaleString(),
-        totalResponses: (123867000).toLocaleString(),
-        avgSatisfaction: `${(4.2).toFixed(1)}/5`,
-        completionRate: `${(98).toFixed(0)}%`,
-        netPromoterScore: 90,
-        csat: `${(90).toFixed(0)}%`,
-    };
-};
-
-const getSatisfactionInsightsData = () => {
-    // function call that fetches and returns main metrics data
-
-    // mock data
-    return {
-        location: {
-            best: "New York",
-            worst: "Los Angeles",
-            bestScore: 4.8,
-            worstScore: 3.5,
-        },
-        serviceType: {
-            best: "Premium",
-            worst: "Basic",
-            bestScore: 4.9,
-            worstScore: 3.2,
-        },
-    };
-};
-
-const getResponseInsightsData = () => {
-    // function call that fetches and returns main metrics data
-
-    // mock data
-    return {
-        peakHours: "1-2 AM",
-        peakHoursAvgResponses: 38,
-        trend: 0.5,
-    };
-};
-
-const Dashboard = ({ setChosenCategory }) => {
+const Dashboard = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [mainMetricsData, setMainMetricsData] = useState(null);
     const [satisfactionInsightsData, setSatisfactionInsightsData] =
@@ -75,20 +24,18 @@ const Dashboard = ({ setChosenCategory }) => {
     const [responseInsightsData, setResponseInsightsData] = useState(null);
 
     useEffect(() => {
-        
         const fetchData = async () => {
-            setIsLoading(true);
 
             // Simulate API calls with delays
             await new Promise((resolve) => setTimeout(resolve, 1000));
             const metricsData = getMainMetricsData();
             setMainMetricsData(metricsData);
 
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            // await new Promise((resolve) => setTimeout(resolve, 500));
             const satisfactionData = getSatisfactionInsightsData();
             setSatisfactionInsightsData(satisfactionData);
 
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            // await new Promise((resolve) => setTimeout(resolve, 500));
             const responseData = getResponseInsightsData();
             setResponseInsightsData(responseData);
 
@@ -105,14 +52,13 @@ const Dashboard = ({ setChosenCategory }) => {
     }
 
     return (
-        <div className="p-8 bg-gray-100/70">
+        <div className="p-0 sm:p-1 md:p-3 lg:p-8 dark:bg-base-100 bg-gray-100/70 flex-1">
             <MainMetrics data={mainMetricsData} />
             <div className=" flex flex-col">
-                <div className="w-full h-[30rem] bg-white py-8 mb-8 shadow-[0px_0px_5px_rgba(0,0,0,0.2)] rounded-md px-5">
+                <div className="container h-[30rem] dark:bg-base-300 bg-white py-8 mb-8 px-5">
                     <SatisfactionTrendChart />
                 </div>
-
-                <SatisfactionInsight
+                <SatisfactionInsights
                     currentWeek={currentWeek}
                     data={satisfactionInsightsData}
                 />
@@ -127,13 +73,13 @@ const Dashboard = ({ setChosenCategory }) => {
 
                     <div className="flex-1 flex items-center justify-center">
                         <button
-                            onClick={() => setChosenCategory(3)}
-                            className="group h-12 inline-flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-blue-500 text-blue-600 text-base font-semibold rounded-lg shadow-sm transition-all duration-300 hover:bg-blue-600 hover:text-white hover:shadow-md"
+                            onClick={() => navigate("/admin/analytics")}
+                            className="group h-12 custom-contrast-btn gap-2 p-3 dark:bg-base-100"
                         >
-                            <BarChart3 className=" text-blue-600 group-hover:text-white" />
+                            <BarChart3 className=" text-primary group-hover:text-white" />
                             <span>View Detailed Analytics</span>
-                            <div className="flex items-center justify-center w-5 h-5 bg-blue-50 rounded transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-white/20">
-                                <ArrowRight className="w-3.5 h-3.5 text-blue-600 transition-colors duration-300 group-hover:text-white" />
+                            <div className="flex items-center justify-center w-5 h-5 bg-primary/10 rounded transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-white/20">
+                                <ArrowRight className="w-3.5 h-3.5 text-primary transition-colors duration-300 group-hover:text-white" />
                             </div>
                         </button>
                     </div>
