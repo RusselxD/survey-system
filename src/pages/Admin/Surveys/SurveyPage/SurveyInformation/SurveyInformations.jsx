@@ -58,6 +58,10 @@ const SurveyInformations = ({ survey }) => {
                     value={format(new Date(survey.published), "MMM dd, yyyy")}
                 />
                 <Info
+                    label="Version"
+                    value={survey.version || "N/A"}
+                />
+                <Info
                     label="Link"
                     value={
                         <div className="flex items-center gap-2">

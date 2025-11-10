@@ -16,6 +16,7 @@ import {
 } from "../../../utils/api/dashboard.js";
 
 const Dashboard = () => {
+    
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [mainMetricsData, setMainMetricsData] = useState(null);

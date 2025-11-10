@@ -18,11 +18,27 @@ import Responses from "./pages/Admin/Responses/Responses.jsx";
 import Users from "./pages/Admin/Users/Users.jsx";
 import Settings from "./pages/Admin/Settings/Settings.jsx";
 import SurveyPage from "./pages/Admin/Surveys/SurveyPage/SurveyPage.jsx";
+import { Login } from "./pages/Admin/Login/Login.jsx";
+import { Unauthorized } from "./pages/Admin/Login/Unauthorized.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
     {
+        path: "/login",
+        element: <Login />,
+    },
+    {
+        path: "/unauthorized",
+        element: <Unauthorized />,
+    },
+    {
         path: "/admin",
-        element: <AdminPage />,
+        element: (
+            <ProtectedRoute requiredRole="Admin">
+                <AdminPage />
+            </ProtectedRoute>
+        ),
         children: [
             {
                 index: true,
@@ -37,8 +53,14 @@ const router = createBrowserRouter([
             { path: "settings", element: <Settings /> },
         ],
     },
+    {
+        path: "/",
+        element: <Navigate to="/admin/dashboard" replace />,
+    },
 ]);
 
 createRoot(document.getElementById("root")).render(
-    <RouterProvider router={router} />
+    <AuthProvider>
+        <RouterProvider router={router} />
+    </AuthProvider>
 );

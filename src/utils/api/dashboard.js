@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "./auth";
+
 export const formatDate = (date) => {
     return date.toLocaleDateString(undefined, {
         month: "short",
@@ -15,6 +17,7 @@ export const getCurrentWeek = () => {
 
 export const getMainMetricsData = () => {
     // function call that fetches and returns main metrics data
+    // await fetchWithAuth('/api/dashboard/data');
 
     // mock data
     return {

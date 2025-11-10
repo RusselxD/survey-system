@@ -6,7 +6,9 @@ import SurveyInformations from "./SurveyInformation/SurveyInformations";
 import { useEffect, useState } from "react";
 import { getSurveyData } from "../../../../utils/api/survey";
 
-const SurveyPage = () => {
+
+const SurveyPage = () => {    
+
     const { uuid } = useParams();
 
     const [survey, setSurvey] = useState(null);
@@ -14,26 +16,23 @@ const SurveyPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            
             try {
-                
-                const surveyData = await getSurveyData(uuid); 
+                const surveyData = await getSurveyData(uuid);
                 setSurvey(surveyData);
             } catch (error) {
                 console.error("Failed to fetch survey data:", error);
             } finally {
-                setIsLoading(false); 
+                setIsLoading(false);
             }
         };
 
         fetchData();
     }, [uuid]);
 
-    
     if (isLoading) {
         return (
             <div className="text-center p-8">
-                <p>Loading survey data...</p> 
+                <p>Loading survey data...</p>
             </div>
         );
     }

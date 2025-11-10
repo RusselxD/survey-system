@@ -2,6 +2,7 @@ export const getSurveyData = (uuid) => {
     // function call that fetches and returns a single survey data
 
     // mock data
+    // survey_version
     const survey = {
         uuid: "123e4567-e89b-12d3-a456-426614174000",
         title: "Customer Satisfaction Survey 2025 Annual Report",
@@ -10,6 +11,7 @@ export const getSurveyData = (uuid) => {
         location: "New York, USA",
         serviceType: "Online",
         published: "2025-10-15T09:30:00Z",
+        version: "1",
         url: "https://example.com/surveys/customer-satisfaction-2025",
         qrCodeUrl:
             "https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=Customer Satisfaction Survey 2025 Annual Report",
