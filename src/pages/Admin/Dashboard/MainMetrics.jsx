@@ -51,7 +51,7 @@ const metrics = [
     {
         title: "Customer Satisfaction (CSAT)",
         value: undefined,
-        desc: "Satisfied customers (4-5 star ratings)",
+        desc: "Satisfied ratings (4-5 stars)",
         icon: Star,
         borderColor: "border-pink-500",
         iconColor: "text-pink-500",

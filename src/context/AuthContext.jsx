@@ -1,17 +1,26 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import {API_URL} from '../utils/api/auth'
+import { API_URL } from "../utils/api/auth"; // Make sure this path is correct
 
 const AuthContext = createContext(null);
 
-// JWT Claim type constants
-const ROLE_CLAIM =
-    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-const NAME_CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
-
 export function AuthProvider({ children }) {
+
     const [user, setUser] = useState(null);
+    const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const hasPermission = (permissionName) => {
+        return permissions.includes(permissionName);
+    }
+
+    const hasAnyPermission = (permissionNames) => {
+        return permissionNames.some(permission => permissions.includes(permission));
+    };
+
+    const hasAllPermissions = (permissionNames) => {
+        return permissionNames.every(permission => permissions.includes(permission));
+    };
 
     useEffect(() => {
         const token = sessionStorage.getItem("token");
@@ -19,25 +28,37 @@ export function AuthProvider({ children }) {
             try {
                 const decoded = jwtDecode(token);
                 if (decoded.exp * 1000 > Date.now()) {
+
+                    const permissionsArray = decoded.permissions.split(",");
+
                     setUser({
-                        username: decoded[NAME_CLAIM] || decoded.sub,
-                        role: decoded[ROLE_CLAIM],
+                        email: decoded.email,
+                        role: decoded.role,
+                        firstName: decoded.firstName,
+                        lastName: decoded.lastName,
+                        permissions: permissionsArray,
                     });
+
+                    setPermissions(permissionsArray);
                 } else {
                     sessionStorage.removeItem("token");
                 }
+
             } catch (error) {
+                console.error("Failed to decode token on load:", error);
                 sessionStorage.removeItem("token");
             }
         }
         setLoading(false);
     }, []);
 
-    const login = async (username, password) => {
+    const login = async (email, password) => {
+
+        // api call
         const response = await fetch(`${API_URL}/api/Auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (!response.ok) {
@@ -45,24 +66,34 @@ export function AuthProvider({ children }) {
         }
 
         const data = await response.json();
+
         sessionStorage.setItem("token", data.token);
 
+        // decode the token
         const decoded = jwtDecode(data.token);
+        
+        const permissionsArray = decoded.permissions.split(",");
+
+        setPermissions(permissionsArray);
 
         setUser({
-            username: decoded[NAME_CLAIM] || decoded.sub,
-            role: decoded[ROLE_CLAIM],
+            email: decoded.email,
+            role: decoded.role,
+            firstName: decoded.firstName,
+            lastName: decoded.lastName,
+            permissions: permissionsArray,
         });
     };
 
     const logout = () => {
         sessionStorage.removeItem("token");
         setUser(null);
+        setPermissions([]);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
-            {children}
+        <AuthContext.Provider value={{ user, login, logout, loading, hasPermission, hasAnyPermission, hasAllPermissions }}>
+            {!loading && children}
         </AuthContext.Provider>
     );
 }

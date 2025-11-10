@@ -1,6 +1,10 @@
 import { LogOut, Menu } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+    const { firstName } = useAuth().user;
+    console.log(useAuth().user)
+
     return (
         <div className="navbar dark:bg-base-300 bg-white shadow-md justify-between items-center p-3 sm:p-4">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -15,7 +19,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                         Admin Dashboard
                     </p>
                     <p className="text-xs sm:text-sm custom-sec-txt truncate">
-                        Welcome back, User
+                        Welcome back, {firstName}
                     </p>
                 </div>
             </div>

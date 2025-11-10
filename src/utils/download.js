@@ -41,3 +41,15 @@ export const downloadFile = async (url, filename) => {
 export const sanitizeFilename = (text) => {
     return text.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 };
+
+
+// import bcrypt from "bcrypt";
+
+// async function generateHash() {
+//     const password = "Russel-08";
+//     const hash = await bcrypt.hash(password, 10);
+//     console.log("Password:", password);
+//     console.log("Hashed:", hash);
+// }
+
+// generateHash();

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 export function Login() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -16,10 +16,10 @@ export function Login() {
         setLoading(true);
 
         try {
-            await login(username, password);
+            await login(email, password);
             navigate("/admin/dashboard");
         } catch (err) {
-            setError("Invalid username or password");
+            setError("Invalid email or password");
         } finally {
             setLoading(false);
         }
@@ -35,9 +35,9 @@ export function Login() {
                 <div style={{ marginBottom: "10px" }}>
                     <input
                         type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         style={{ width: "100%", padding: "8px" }}
                         required
                     />

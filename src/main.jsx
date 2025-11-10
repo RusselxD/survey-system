@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: (
-            <ProtectedRoute requiredRole="Admin">
+            <ProtectedRoute requiredRole={["Super Admin", "Survey Manager", "Analyst"]}>
                 <AdminPage />
             </ProtectedRoute>
         ),
@@ -52,10 +52,6 @@ const router = createBrowserRouter([
             { path: "users", element: <Users /> },
             { path: "settings", element: <Settings /> },
         ],
-    },
-    {
-        path: "/",
-        element: <Navigate to="/admin/dashboard" replace />,
     },
 ]);
 

@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import CardsContainer from "./CardsContainer";
+import { useAuth } from "../../../context/AuthContext";
 
 const cardsDummyData = [
     {
@@ -108,7 +109,7 @@ const cardsDummyData = [
     },
 ];
 
-const DropDown = ({title, choices}) => {
+const DropDown = ({ title, choices }) => {
     return (
         <div className="dropdown dropdown-bottom p-0">
             <div
@@ -133,15 +134,19 @@ const DropDown = ({title, choices}) => {
 };
 
 const Head = () => {
+    const { hasPermission } = useAuth();
+
     return (
         <div className="dark:text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b dark:border-white border-black pb-3 mb-5">
             <div className="">
                 <DropDown title="Status" choices={["Published", "Draft"]} />
             </div>
-            <button className="custom-primary-btn p-3 gap-1 text-xs    ">
-                <Plus size={18} />
-                <span>Create New Survey</span>
-            </button>
+            {hasPermission("survey.create") && (
+                <button className="custom-primary-btn p-3 gap-1 text-xs    ">
+                    <Plus size={18} />
+                    <span>Create New Survey</span>
+                </button>
+            )}
         </div>
     );
 };

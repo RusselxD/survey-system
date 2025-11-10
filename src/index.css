@@ -103,9 +103,9 @@
         background: linear-gradient(
             90deg,
             transparent,
-            rgba(255, 255, 255, 0.4),
+            rgb(60, 60, 60),
             transparent
-        );
+        ) !important;
         animation: shimmer 2s infinite;
     }
 
