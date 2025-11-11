@@ -1,25 +1,28 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { API_URL } from "../utils/api/auth"; // Make sure this path is correct
+import { authAPI } from "../utils/api/auth.js";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-
     const [user, setUser] = useState(null);
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const hasPermission = (permissionName) => {
         return permissions.includes(permissionName);
-    }
+    };
 
     const hasAnyPermission = (permissionNames) => {
-        return permissionNames.some(permission => permissions.includes(permission));
+        return permissionNames.some((permission) =>
+            permissions.includes(permission)
+        );
     };
 
     const hasAllPermissions = (permissionNames) => {
-        return permissionNames.every(permission => permissions.includes(permission));
+        return permissionNames.every((permission) =>
+            permissions.includes(permission)
+        );
     };
 
     useEffect(() => {
@@ -28,10 +31,10 @@ export function AuthProvider({ children }) {
             try {
                 const decoded = jwtDecode(token);
                 if (decoded.exp * 1000 > Date.now()) {
-
                     const permissionsArray = decoded.permissions.split(",");
 
                     setUser({
+                        id: decoded.sub,
                         email: decoded.email,
                         role: decoded.role,
                         firstName: decoded.firstName,
@@ -43,7 +46,6 @@ export function AuthProvider({ children }) {
                 } else {
                     sessionStorage.removeItem("token");
                 }
-
             } catch (error) {
                 console.error("Failed to decode token on load:", error);
                 sessionStorage.removeItem("token");
@@ -53,30 +55,24 @@ export function AuthProvider({ children }) {
     }, []);
 
     const login = async (email, password) => {
+        console.log(email, password);
+        const response = await authAPI.login({ email, password });
+        console.log(response);
 
-        // api call
-        const response = await fetch(`${API_URL}/api/Auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error("Invalid credentials");
-        }
-
-        const data = await response.json();
+        // Axios wraps the response in a data property
+        const data = response.data;
 
         sessionStorage.setItem("token", data.token);
 
         // decode the token
         const decoded = jwtDecode(data.token);
-        
+
         const permissionsArray = decoded.permissions.split(",");
 
         setPermissions(permissionsArray);
 
         setUser({
+            id: decoded.sub,
             email: decoded.email,
             role: decoded.role,
             firstName: decoded.firstName,
@@ -92,7 +88,17 @@ export function AuthProvider({ children }) {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, hasPermission, hasAnyPermission, hasAllPermissions }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                login,
+                logout,
+                loading,
+                hasPermission,
+                hasAnyPermission,
+                hasAllPermissions,
+            }}
+        >
             {!loading && children}
         </AuthContext.Provider>
     );
