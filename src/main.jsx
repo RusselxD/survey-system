@@ -15,13 +15,13 @@ import Dashboard from "./pages/Admin/Dashboard/Dashboard.jsx";
 import Analytics from "./pages/Admin/Analytics/Analytics.jsx";
 import Surveys from "./pages/Admin/Surveys/Surveys.jsx";
 import Responses from "./pages/Admin/Responses/Responses.jsx";
-import Users from "./pages/Admin/Users/Users.jsx";
 import Settings from "./pages/Admin/Settings/Settings.jsx";
 import SurveyPage from "./pages/Admin/Surveys/SurveyPage/SurveyPage.jsx";
 import { Login } from "./pages/Admin/Login/Login.jsx";
 import { Unauthorized } from "./pages/Admin/Login/Unauthorized.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
+import UsersPage from "./pages/Admin/Users/UsersPage.jsx";
 
 const router = createBrowserRouter([
     {
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
             { path: "surveys", element: <Surveys /> },
             { path: "surveys/:uuid", element: <SurveyPage /> },
             { path: "responses", element: <Responses /> },
-            { path: "users", element: <Users /> },
+            { path: "users", element: <UsersPage /> },
             { path: "settings", element: <Settings /> },
         ],
     },

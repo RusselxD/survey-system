@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { rolesAPI, usersAPI } from "../../../utils/api/users";
 import ModalXButton from "../../../components/ModalXButton";
-import { is } from "date-fns/locale";
+import { useAuth } from "../../../context/AuthContext";
 
 const TextInput = ({ val, setVal, label }) => {
     return (
@@ -56,7 +56,7 @@ const RoleDropDown = ({
                             <button
                                 key={r.name}
                                 onClick={() => {
-                                    setRole(r.name);
+                                    setRole(r.id);
                                     setRolesDropdownOpen(false);
                                 }}
                                 className={`px-3 py-2 text-left ${
@@ -147,32 +147,19 @@ const ConfirmDeleteContainer = ({
 };
 
 const ModifyUserModal = ({
+    roles,
     userPassed,
     onClose,
     updateUserInList,
     deleteUserFromList,
+    updateRoleCountInList,
 }) => {
-    const [roles, setRoles] = useState([]);
-    const [isLoadingRoles, setIsLoadingRoles] = useState(false);
-    const [loadingRolesError, setLoadingRolesError] = useState(null);
+
+    const { toastError, toastSuccess } = useAuth();
 
     const [rolesDropdownOpen, setRolesDropdownOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchRoles = async () => {
-            setIsLoadingRoles(true);
-            try {
-                const res = await rolesAPI.getRoles();
-                setRoles(res.data);
-                console.log(res.data);
-            } catch (error) {
-                setLoadingRolesError(error);
-            } finally {
-                setIsLoadingRoles(false);
-            }
-        };
-        fetchRoles();
-    }, []);
+    const oldRoleId = roles.find((r) => r.id === userPassed.roleId)?.id || "";
 
     const [user, setUser] = useState(userPassed);
 
@@ -188,9 +175,13 @@ const ModifyUserModal = ({
         try {
             await usersAPI.deleteUser(user.id);
             deleteUserFromList(user.id);
+            updateRoleCountInList(user.role, false);
             onClose();
+            toastSuccess("User deleted successfully.");
         } catch (error) {
-            console.error("Failed to delete user:", error);
+            toastError(
+                error.response?.data?.message || "Something went wrong."
+            );
         } finally {
             setIsDeletingUser(false);
         }
@@ -199,17 +190,41 @@ const ModifyUserModal = ({
     const handleUpdateUser = async () => {
         setIsUpdatingUser(true);
 
-        // configuration based on UserUpdateDto in backend
-        await usersAPI.updateUser(user.id, {
+        // configuration based on UserAdminUpdateDto in backend
+        const newUser = {
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            roleId: roles.find((role) => role.name === user.role)?.id,
-        });
+            roleId: roles.find((role) => role.id === user.roleId)?.id,
+        };
 
-        updateUserInList(user);
-        setIsUpdatingUser(false);
-        onClose();
+        try {
+            await usersAPI.updateUser(user.id, newUser);
+
+            updateUserInList(newUser);
+
+            if (oldRoleId !== newUser.roleId) {
+                updateRoleCountInList(
+                    roles.find((r) => r.id === oldRoleId)?.name || "",
+                    false
+                );
+                updateRoleCountInList(
+                    roles.find((r) => r.id === newUser.roleId)?.name || "",
+                    true
+                );
+            }
+            toastSuccess("User updated successfully.");
+            onClose();
+        } catch (error) {
+            console.log(error)
+            toastError(
+                error.response?.data || "Something went wrong."
+            );
+        } finally {
+            setIsUpdatingUser(false);
+        }
+
     };
 
     return (
@@ -249,25 +264,13 @@ const ModifyUserModal = ({
                     label="Email"
                 />
 
-                {loadingRolesError && (
-                    <div className="text-white text-xs mt-4 px-3 py-2 bg-red-500 rounded-md">
-                        {loadingRolesError.message}. Try again later.
-                    </div>
-                )}
-
-                {isLoadingRoles && loadingRolesError == null && (
-                    <div className="skeleton w-20 mt-3 h-10"></div>
-                )}
-
-                {!isLoadingRoles && loadingRolesError == null && (
-                    <RoleDropDown
-                        roles={roles}
-                        role={user.role}
-                        setRole={(value) => setUser({ ...user, role: value })}
-                        rolesDropdownOpen={rolesDropdownOpen}
-                        setRolesDropdownOpen={setRolesDropdownOpen}
-                    />
-                )}
+                <RoleDropDown
+                    roles={roles}
+                    role={roles.find((r) => r.id === user.roleId)?.name || ""}
+                    setRole={(value) => setUser({ ...user, roleId: value })}
+                    rolesDropdownOpen={rolesDropdownOpen}
+                    setRolesDropdownOpen={setRolesDropdownOpen}
+                />
 
                 <div className="flex items-center justify-between custom-primary-txt text-[0.800rem] mt-5 w-full">
                     <DynamicDeleteUserButton

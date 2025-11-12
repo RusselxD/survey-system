@@ -24,10 +24,12 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 </div>
             </div>
 
-            <button className="btn bg-red-500 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 hover:bg-red-600 flex-shrink-0">
+            
+
+            {/* <button className="btn bg-red-500 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 hover:bg-red-600 flex-shrink-0">
                 <LogOut size={16} className="sm:w-5 sm:h-5" />
                 <span className="hidden sm:inline">Log Out</span>
-            </button>
+            </button> */}
         </div>
     );
 };

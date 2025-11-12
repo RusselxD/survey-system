@@ -93,28 +93,20 @@
         overflow: hidden;
     }
 
-    .custom-skeleton::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgb(60, 60, 60),
-            transparent
-        ) !important;
-        animation: shimmer 2s infinite;
+    /* Success toast style */
+    .Toastify__toast--success {
+        background: #4caf50; /* green */
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
     }
 
-    @keyframes shimmer {
-        0% {
-            transform: translateX(-100%);
-        }
-        100% {
-            transform: translateX(100%);
-        }
+    /* Error toast style */
+    .Toastify__toast--error {
+        padding: 1rem 2rem;
+        background: #f44336; /* red */
+        color: white;
+        font-weight: lighter;
+        border-radius: 8px;
     }
 }
