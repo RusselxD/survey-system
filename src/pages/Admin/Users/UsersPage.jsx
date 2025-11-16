@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { rolesAPI, usersAPI } from "../../../utils/api/users";
+import { useEffect, useState } from "react";
+import { permissionsAPI, rolesAPI, usersAPI } from "../../../utils/api/users";
 import UsersPageSkeleton from "./UsersPageSkeleton";
-import ModifyUserModal from "./ModifyUserModal";
+import ModifyUserModal from "./ModifyUserModal/ModifyUserModal";
 import UsersTable from "./UsersTable";
 import UserManagementContainer from "./UserManagementContainer/UserManagementContainer";
+import { useAuth } from "../../../context/AuthContext";
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
+    const [permissions, setPermissions] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     const [modifyUserModalisOpen, setModifyUserModalisOpen] = useState(false);
     const [selectedUserToModify, setSelectedUserToModify] = useState(null);
+
+    const { toastError, hasPermission } = useAuth();
+
+    const addUserToList = (newUser) => {
+        setUsers((prevUsers) => [...prevUsers, newUser]);
+    };
 
     const deleteUserFromList = (userId) => {
         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
@@ -70,8 +77,12 @@ const UsersPage = () => {
 
                 const rolesRes = await rolesAPI.getRoles();
                 setRoles(rolesRes.data);
+
+                const permissionsRes = await permissionsAPI.getPermissions();
+                setPermissions(permissionsRes.data);
             } catch (error) {
-                setError(error);
+                console.log(error);
+                toastError(error.message || "Something went wrong.");
             } finally {
                 setIsLoading(false);
             }
@@ -86,17 +97,22 @@ const UsersPage = () => {
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 flex flex-col">
             <UserManagementContainer
+                addUserToList={addUserToList}
                 roles={roles}
                 updateRoleInList={updateRoleInList}
                 addRoleInList={addRoleInList}
                 deleteRoleFromList={deleteRoleFromList}
+                permissions={permissions}
+                setPermissions={setPermissions}
             />
-            <div className="container p-3 sm:p-4 lg:p-5 dark:bg-base-300 bg-white flex-1 mt-3">
+
+            <div className="container p-3 sm:p-4 lg:p-5 dark:bg-base-300 bg-white flex-1">
                 <UsersTable
                     users={users}
                     roles={roles}
                     setModifyUserModalisOpen={setModifyUserModalisOpen}
                     setSelectedUserToModify={setSelectedUserToModify}
+                    hasPermission={hasPermission}
                 />
             </div>
 

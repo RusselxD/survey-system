@@ -179,7 +179,7 @@ export const SatisfactionTrendChart = () => {
     );
 
     // Generate date labels for the last 7 days
-    const DAYS = 7;
+    const DAYS = 30;
     const today = new Date();
     const labels = Array.from({ length: DAYS }, (_, i) => {
         const d = new Date(today);

@@ -4,7 +4,6 @@
 // import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -22,6 +21,9 @@ import { Unauthorized } from "./pages/Admin/Login/Unauthorized.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import UsersPage from "./pages/Admin/Users/UsersPage.jsx";
+import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import NotFound from "./components/NotFound.jsx";
+import ForceUpdatePassword from "./pages/Admin/Login/ForceUpdatePassword.jsx";
 
 const router = createBrowserRouter([
     {
@@ -33,10 +35,16 @@ const router = createBrowserRouter([
         element: <Unauthorized />,
     },
     {
+        path: "/update-password",
+        element: <ForceUpdatePassword />,
+    },
+    {
         path: "/admin",
         element: (
-            <ProtectedRoute requiredRole={["Super Admin", "Survey Manager", "Analyst"]}>
-                <AdminPage />
+            <ProtectedRoute>
+                <ErrorBoundary>
+                    <AdminPage />
+                </ErrorBoundary>
             </ProtectedRoute>
         ),
         children: [
@@ -48,10 +56,24 @@ const router = createBrowserRouter([
             { path: "analytics", element: <Analytics /> },
             { path: "surveys", element: <Surveys /> },
             { path: "surveys/:uuid", element: <SurveyPage /> },
-            { path: "responses", element: <Responses /> },
-            { path: "users", element: <UsersPage /> },
+            {
+                path: "responses",
+                element: <Responses />,
+            },
+            {
+                path: "users",
+                element: (
+                    <ProtectedRoute>
+                        <UsersPage />
+                    </ProtectedRoute>
+                ),
+            },
             { path: "settings", element: <Settings /> },
         ],
+    },
+    {
+        path: "*",
+        element: <NotFound />,
     },
 ]);
 

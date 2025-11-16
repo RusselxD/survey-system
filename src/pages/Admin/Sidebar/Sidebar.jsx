@@ -8,6 +8,7 @@ import {
     Settings,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 
 const menus = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
@@ -21,6 +22,8 @@ const menus = [
 const appTitle = import.meta.env.VITE_APP_TITLE;
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
+    const { hasPermission } = useAuth();
+
     return (
         <>
             {/* Overlay for mobile */}
@@ -41,7 +44,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 <div className="flex items-center justify-center px-3 py-5 border-b border-gray-500 space-x-2">
                     <ShieldCheck className="text-blue-500" size={35} />
                     <div className="flex-1">
-                        <p className="text-lg text-white font-bold">Admin Panel</p>
+                        <p className="text-lg text-white font-bold">
+                            Admin Panel
+                        </p>
                         <p className="text-gray-300 text-xs break-all">
                             {appTitle}
                         </p>
@@ -51,6 +56,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 {/* Menu Items */}
                 <ul className="menu space-y-3 font-light w-full px-4 py-5">
                     {menus.map((menu, i) => {
+                        if(menu.name == "Users" && !hasPermission("users.manage")){return null}
                         return (
                             <li key={i}>
                                 <NavLink

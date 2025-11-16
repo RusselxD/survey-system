@@ -3,7 +3,6 @@ import { useAuth } from "../../../context/AuthContext";
 
 const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     const { firstName } = useAuth().user;
-    console.log(useAuth().user)
 
     return (
         <div className="navbar dark:bg-base-300 bg-white shadow-md justify-between items-center p-3 sm:p-4">

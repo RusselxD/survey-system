@@ -5,6 +5,7 @@ const UsersTable = ({
     roles,
     setModifyUserModalisOpen,
     setSelectedUserToModify,
+    hasPermission,
 }) => {
     return (
         <div className="overflow-x-auto">
@@ -16,11 +17,15 @@ const UsersTable = ({
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th></th>
+                        {hasPermission("users.manage") && <th></th>}
                     </tr>
                 </thead>
                 <tbody className="custom-primary-txt">
                     {users.map((user, i) => {
+                        const role =
+                            roles.find((role) => role.id === user.roleId)
+                                ?.name || "Unknown";
+
                         return (
                             <tr key={user.id || i}>
                                 <th className=" text-center ">{i + 1}</th>
@@ -30,20 +35,26 @@ const UsersTable = ({
                                 <td className=" text-sm  break-words">
                                     {user.email}
                                 </td>
-                                <td className="w-40">
-                                    {roles.find(role => role.id === user.roleId)?.name || "Unknown"}
-                                </td>
-                                <td className="text-center">
-                                    <button
-                                        onClick={() => {
-                                            setSelectedUserToModify(user);
-                                            setModifyUserModalisOpen(true);
-                                        }}
-                                        className="transition-colors dark:hover:text-white dark:text-gray-400 text-gray-600 hover:text-black p-2"
-                                    >
-                                        <Pencil size={15} />
-                                    </button>
-                                </td>
+                                <td className="w-40">{role}</td>
+                                {hasPermission("users.manage") && (
+                                    <td className="text-center">
+                                        {role == "Super Admin" ? null : (
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedUserToModify(
+                                                        user
+                                                    );
+                                                    setModifyUserModalisOpen(
+                                                        true
+                                                    );
+                                                }}
+                                                className="transition-colors dark:hover:text-white dark:text-gray-400 text-gray-600 hover:text-black p-2"
+                                            >
+                                                <Pencil size={15} />
+                                            </button>
+                                        )}
+                                    </td>
+                                )}
                             </tr>
                         );
                     })}

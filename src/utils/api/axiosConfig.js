@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
     (config) => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -28,9 +28,14 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Token expired or invalid
-            sessionStorage.removeItem("token");
-            window.location.href = "/login";
+            // Only redirect if we're NOT already on the login page or update-password page
+            if (
+                !window.location.pathname.includes("/login") &&
+                !window.location.pathname.includes("/update-password")
+            ) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }
         }
         return Promise.reject(error);
     }

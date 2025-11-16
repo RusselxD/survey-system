@@ -16,7 +16,6 @@ import {
 } from "../../../utils/api/dashboard.js";
 
 const Dashboard = () => {
-    
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [mainMetricsData, setMainMetricsData] = useState(null);
@@ -26,9 +25,8 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-
             // Simulate API calls with delays
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // await new Promise((resolve) => setTimeout(resolve, 1000));
             const metricsData = getMainMetricsData();
             setMainMetricsData(metricsData);
 

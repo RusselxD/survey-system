@@ -1,9 +1,11 @@
-import { AlertTriangle, ChevronDown, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { rolesAPI, usersAPI } from "../../../utils/api/users";
-import ModalXButton from "../../../components/ModalXButton";
-import { useAuth } from "../../../context/AuthContext";
+import { usersAPI } from "../../../../utils/api/users";
+import ModalXButton from "../../../../components/ModalXButton";
+import { useAuth } from "../../../../context/AuthContext";
+import ConfirmDeleteContainer from "./ConfirmDeleteContainer";
+import Roles from "./Roles";
+import { is } from "date-fns/locale";
 
 const TextInput = ({ val, setVal, label }) => {
     return (
@@ -16,65 +18,6 @@ const TextInput = ({ val, setVal, label }) => {
                 value={val}
                 onChange={(e) => setVal(e.target.value)}
             />
-        </fieldset>
-    );
-};
-
-const RoleDropDown = ({
-    roles,
-    role,
-    setRole,
-    rolesDropdownOpen,
-    setRolesDropdownOpen,
-}) => {
-    return (
-        <fieldset className="fieldset w-full mt-3">
-            <legend className="fieldset-legend mb-0.5">Role</legend>
-            <div className="relative">
-                <button
-                    tabIndex={0}
-                    onClick={() => setRolesDropdownOpen(!rolesDropdownOpen)}
-                    className="dark:bg-gray-900 bg-gray-300 dark:text-gray-100 text-gray-800 min-w-32 py-3 px-4 space-x-2 flex items-center justify-between rounded-md"
-                >
-                    <span>{role}</span>
-                    <ChevronDown
-                        size={20}
-                        className={`${
-                            rolesDropdownOpen ? "rotate-180" : ""
-                        } transition-transform duration-150`}
-                    />
-                </button>
-                <div
-                    className={`overflow-hidden absolute custom-primary-txt rounded-md mt-1 flex flex-col transition-[opacity] duration-150 ease-in-out ${
-                        rolesDropdownOpen
-                            ? "block opacity-100"
-                            : "hidden opacity-0"
-                    }`}
-                >
-                    {roles.map((r, i) => {
-                        return (
-                            <button
-                                key={r.name}
-                                onClick={() => {
-                                    setRole(r.id);
-                                    setRolesDropdownOpen(false);
-                                }}
-                                className={`px-3 py-2 text-left ${
-                                    r.name === role
-                                        ? "bg-gray-200 dark:bg-gray-600 cursor-default"
-                                        : "dark:bg-gray-800 dark:hover:bg-gray-600"
-                                }  ${
-                                    i == roles.length - 1
-                                        ? "mb-2 rounded-b-md"
-                                        : ""
-                                } `}
-                            >
-                                {r.name}
-                            </button>
-                        );
-                    })}
-                </div>
-            </div>
         </fieldset>
     );
 };
@@ -101,51 +44,6 @@ const DynamicDeleteUserButton = ({
     );
 };
 
-const ConfirmDeleteContainer = ({
-    confirmDeleteUserIsOpen,
-    handleDeleteUser,
-    isDeletingUser,
-    user,
-}) => {
-    return (
-        <div
-            className={` mt-3 overflow-hidden w-full transition-[height] ${
-                confirmDeleteUserIsOpen ? "h-40" : "h-0"
-            }`}
-        >
-            <div className="custom-primary-txt text-xs space-y-2 flex flex-col justify-center py-3 w-full border-l-[6px] border-red-700 dark:bg-red-500 bg-red-200 px-4">
-                <span className="flex items-center dark:text-red-200 text-red-700">
-                    <AlertTriangle />
-                    <span className="text-sm font-semibold ml-1">Warning</span>
-                </span>
-                <p className="custom-sec-txt ">This action cannot be undone.</p>
-                <p className="break-all custom-sec-txt">
-                    {user.firstName} will be deleted from the list of people who
-                    have access.
-                </p>
-            </div>
-            <button
-                onClick={() => handleDeleteUser()}
-                disabled={isDeletingUser}
-                className={`text-white px-3 py-2 text-sm rounded-md mt-2 transition-colors ${
-                    isDeletingUser
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-red-600 hover:bg-red-700"
-                }`}
-            >
-                {isDeletingUser ? (
-                    <>
-                        <span className="loading loading-spinner loading-xs mr-2"></span>
-                        Deleting...
-                    </>
-                ) : (
-                    <span>Delete</span>
-                )}
-            </button>
-        </div>
-    );
-};
-
 const ModifyUserModal = ({
     roles,
     userPassed,
@@ -154,10 +52,7 @@ const ModifyUserModal = ({
     deleteUserFromList,
     updateRoleCountInList,
 }) => {
-
     const { toastError, toastSuccess } = useAuth();
-
-    const [rolesDropdownOpen, setRolesDropdownOpen] = useState(false);
 
     const oldRoleId = roles.find((r) => r.id === userPassed.roleId)?.id || "";
 
@@ -166,6 +61,7 @@ const ModifyUserModal = ({
     const [confirmDeleteUserIsOpen, setConfirmDeleteUserIsOpen] =
         useState(false);
 
+    const [errors, setErrors] = useState({});
     const [isDeletingUser, setIsDeletingUser] = useState(false);
     const [isUpdatingUser, setIsUpdatingUser] = useState(false);
 
@@ -188,6 +84,35 @@ const ModifyUserModal = ({
     };
 
     const handleUpdateUser = async () => {
+        if (isUpdatingUser) return;
+
+        // Validate form
+        const newErrors = {};
+
+        if (!user.firstName?.trim()) {
+            newErrors.firstName = "First name is required";
+        }
+
+        if (!user.lastName?.trim()) {
+            newErrors.lastName = "Last name is required";
+        }
+
+        if (!user.email?.trim()) {
+            newErrors.email = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+            newErrors.email = "Please enter a valid email address";
+        }
+
+        if (!user.roleId) {
+            newErrors.roleId = "Please select a role";
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) {
+            return;
+        }
+
         setIsUpdatingUser(true);
 
         // configuration based on UserAdminUpdateDto in backend
@@ -217,14 +142,11 @@ const ModifyUserModal = ({
             toastSuccess("User updated successfully.");
             onClose();
         } catch (error) {
-            console.log(error)
-            toastError(
-                error.response?.data || "Something went wrong."
-            );
+            console.log(error);
+            toastError(error.response?.data || "Something went wrong.");
         } finally {
             setIsUpdatingUser(false);
         }
-
     };
 
     return (
@@ -242,35 +164,57 @@ const ModifyUserModal = ({
                 </div>
 
                 <div className="w-full flex justify-between space-x-5 my-3">
-                    <TextInput
-                        val={user.firstName}
-                        setVal={(value) =>
-                            setUser({ ...user, firstName: value })
-                        }
-                        label="First Name"
-                    />
-                    <TextInput
-                        val={user.lastName}
-                        setVal={(value) =>
-                            setUser({ ...user, lastName: value })
-                        }
-                        label="Last Name"
-                    />
+                    <div className="w-full">
+                        <TextInput
+                            val={user.firstName}
+                            setVal={(value) =>
+                                setUser({ ...user, firstName: value })
+                            }
+                            label="First Name"
+                        />
+                        {errors.firstName && (
+                            <p className="text-xs text-red-500 mt-1">
+                                {errors.firstName}
+                            </p>
+                        )}
+                    </div>
+                    <div className="w-full">
+                        <TextInput
+                            val={user.lastName}
+                            setVal={(value) =>
+                                setUser({ ...user, lastName: value })
+                            }
+                            label="Last Name"
+                        />
+                        {errors.lastName && (
+                            <p className="text-xs text-red-500 mt-1">
+                                {errors.lastName}
+                            </p>
+                        )}
+                    </div>
                 </div>
 
-                <TextInput
-                    val={user.email}
-                    setVal={(value) => setUser({ ...user, email: value })}
-                    label="Email"
-                />
+                <div className="w-full">
+                    <TextInput
+                        val={user.email}
+                        setVal={(value) => setUser({ ...user, email: value })}
+                        label="Email"
+                    />
+                    {errors.email && (
+                        <p className="text-xs text-red-500 mt-1">
+                            {errors.email}
+                        </p>
+                    )}
+                </div>
 
-                <RoleDropDown
+                <Roles
                     roles={roles}
                     role={roles.find((r) => r.id === user.roleId)?.name || ""}
                     setRole={(value) => setUser({ ...user, roleId: value })}
-                    rolesDropdownOpen={rolesDropdownOpen}
-                    setRolesDropdownOpen={setRolesDropdownOpen}
                 />
+                {errors.roleId && (
+                    <p className="text-xs text-red-500 mt-1">{errors.roleId}</p>
+                )}
 
                 <div className="flex items-center justify-between custom-primary-txt text-[0.800rem] mt-5 w-full">
                     <DynamicDeleteUserButton

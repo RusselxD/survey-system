@@ -9,7 +9,6 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [permissions, setPermissions] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     const hasPermission = (permissionName) => {
         return permissions.includes(permissionName);
@@ -28,65 +27,79 @@ export function AuthProvider({ children }) {
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                if (decoded.exp * 1000 > Date.now()) {
-                    const permissionsArray = decoded.permissions.split(",");
+        const decodeTokenOnLoad = () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const decoded = jwtDecode(token);
 
-                    setUser({
-                        id: decoded.sub,
-                        email: decoded.email,
-                        role: decoded.role,
-                        firstName: decoded.firstName,
-                        lastName: decoded.lastName,
-                        permissions: permissionsArray,
-                    });
+                    if (decoded.exp * 1000 > Date.now()) {
+                        const permissionsArray = decoded.permissions
+                            ? decoded.permissions.split(",")
+                            : [];
 
-                    setPermissions(permissionsArray);
-                } else {
-                    sessionStorage.removeItem("token");
+                        setUser({
+                            id: decoded.sub,
+                            email: decoded.email,
+                            role: decoded.role,
+                            firstName: decoded.firstName,
+                            lastName: decoded.lastName,
+                            permissions: permissionsArray,
+                            forceUpdatePassword:
+                                decoded.forceUpdatePassword === "True",
+                        });
+
+                        setPermissions(permissionsArray);
+                        console.log(user)
+                    } else {
+                        console.log("Token expired, removing...");
+                        localStorage.removeItem("token");
+                    }
+                } catch (error) {
+                    console.error("Failed to decode token on load:", error);
+                    localStorage.removeItem("token");
                 }
-            } catch (error) {
-                console.error("Failed to decode token on load:", error);
-                sessionStorage.removeItem("token");
             }
-        }
-        setLoading(false);
+        };
+        decodeTokenOnLoad();
     }, []);
 
     const login = async (email, password) => {
-        console.log(email, password);
-        const response = await authAPI.login({ email, password });
-        console.log(response);
+        try {
+            const response = await authAPI.login({ email, password });
 
-        // Axios wraps the response in a data property
-        const data = response.data;
+            const data = response.data;
 
-        sessionStorage.setItem("token", data.token);
+            localStorage.setItem("token", data.token);
 
-        // decode the token
-        const decoded = jwtDecode(data.token);
+            // decode the token
+            const decoded = jwtDecode(data.token);
 
-        console.log(decoded)
+            const permissionsArray = decoded.permissions
+                ? decoded.permissions.split(",")
+                : [];
 
-        const permissionsArray = decoded.permissions.split(",");
+            setPermissions(permissionsArray);
+            const forceUpdatePassword = decoded.forceUpdatePassword === "True";
 
-        setPermissions(permissionsArray);
+            setUser({
+                id: decoded.sub,
+                email: decoded.email,
+                role: decoded.role,
+                firstName: decoded.firstName,
+                lastName: decoded.lastName,
+                permissions: permissionsArray,
+                forceUpdatePassword: forceUpdatePassword,
+            });
 
-        setUser({
-            id: decoded.sub,
-            email: decoded.email,
-            role: decoded.role,
-            firstName: decoded.firstName,
-            lastName: decoded.lastName,
-            permissions: permissionsArray,
-        });
+        } catch (error) {
+            // Re-throw the error so Login.jsx can catch it
+            throw error;
+        }
     };
 
     const logout = () => {
-        sessionStorage.removeItem("token");
+        localStorage.removeItem("token");
         setUser(null);
         setPermissions([]);
     };
@@ -95,7 +108,10 @@ export function AuthProvider({ children }) {
         toast(
             <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-0.5">
-                    <CheckCircle className="w-5 h-5 text-green-700" strokeWidth={2} />
+                    <CheckCircle
+                        className="w-5 h-5 text-green-700"
+                        strokeWidth={2}
+                    />
                 </div>
                 <div className="flex-1">
                     <strong className="text-green-900 font-bold text-sm block mb-1">
@@ -123,7 +139,7 @@ export function AuthProvider({ children }) {
         toast(
             <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-0.5">
-                    <CheckCircle className="w-5 h-5 text-red-700" strokeWidth={2} />
+                    <XCircle className="w-5 h-5 text-red-700" strokeWidth={2} />
                 </div>
                 <div className="flex-1">
                     <strong className="text-red-900 font-bold text-sm block mb-1">
@@ -151,9 +167,9 @@ export function AuthProvider({ children }) {
         <AuthContext.Provider
             value={{
                 user,
+                setUser,
                 login,
                 logout,
-                loading,
                 hasPermission,
                 hasAnyPermission,
                 hasAllPermissions,
@@ -161,7 +177,7 @@ export function AuthProvider({ children }) {
                 toastError,
             }}
         >
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 }

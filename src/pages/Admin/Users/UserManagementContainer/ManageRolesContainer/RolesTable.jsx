@@ -79,7 +79,10 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
             deleteRoleFromList(deletingRoleId);
             toastSuccess("Role deleted successfully.");
         } catch (error) {
-            toastError(error.response?.data || "Something went wrong.");
+            console.log(error);
+            toastError(
+                error.message || error.response?.data || "Something went wrong."
+            );
         } finally {
             setIsDeleting(false);
         }
@@ -158,8 +161,9 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
                                                 <span className="loading loading-spinner loading-xs"></span>
                                             )}
 
-                                        {!isDeleting &&
-                                            (editingRoleId == role.id ? (
+                                        {!isDeleting && // not loading
+                                            editingRoleId == role.id && // this is open in editing mode
+                                            role.userCount <= 0 && ( // role doesn't have users
                                                 <Trash
                                                     onClick={() =>
                                                         setDeletingRoleId(
@@ -169,7 +173,7 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
                                                     size={30}
                                                     className="bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-md cursor-pointer"
                                                 />
-                                            ) : null)}
+                                            )}
                                     </td>
                                 )}
 
@@ -197,16 +201,22 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
                                     )}
                                 </td>
                                 <td>{role.userCount}</td>
-                                <td className="flex justify-end">
-                                    <DynamicButtons
-                                        isUpdating={isUpdating}
-                                        editingRoleId={editingRoleId}
-                                        role={role}
-                                        handleCloseEditing={handleCloseEditing}
-                                        handleSaveEdit={handleSaveEdit}
-                                        handleOpenEditing={handleOpenEditing}
-                                    />
-                                </td>
+                                {role.name !== "Super Admin" && (
+                                    <td className="flex justify-end">
+                                        <DynamicButtons
+                                            isUpdating={isUpdating}
+                                            editingRoleId={editingRoleId}
+                                            role={role}
+                                            handleCloseEditing={
+                                                handleCloseEditing
+                                            }
+                                            handleSaveEdit={handleSaveEdit}
+                                            handleOpenEditing={
+                                                handleOpenEditing
+                                            }
+                                        />
+                                    </td>
+                                )}
                             </tr>
                         );
                     })}
