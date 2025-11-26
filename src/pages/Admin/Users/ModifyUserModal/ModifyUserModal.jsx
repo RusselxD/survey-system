@@ -1,26 +1,10 @@
 import { useState } from "react";
-
 import { usersAPI } from "../../../../utils/api/users";
-import ModalXButton from "../../../../components/ModalXButton";
+import ModalXButton from "../../../../components/reusable/ModalXButton";
 import { useAuth } from "../../../../context/AuthContext";
 import ConfirmDeleteContainer from "./ConfirmDeleteContainer";
 import Roles from "./Roles";
-import { is } from "date-fns/locale";
-
-const TextInput = ({ val, setVal, label }) => {
-    return (
-        <fieldset className="fieldset w-full">
-            <legend className="fieldset-legend mb-0.5">{label}</legend>
-            <input
-                type="text"
-                className="input dark:bg-gray-900 bg-gray-300 dark:text-gray-100 text-gray-800 px-3 custom-sec-txt"
-                placeholder={label}
-                value={val}
-                onChange={(e) => setVal(e.target.value)}
-            />
-        </fieldset>
-    );
-};
+import TextInput from "../../../../components/TextInput";
 
 const DynamicDeleteUserButton = ({
     confirmDeleteUserIsOpen,
@@ -171,6 +155,7 @@ const ModifyUserModal = ({
                                 setUser({ ...user, firstName: value })
                             }
                             label="First Name"
+                            withLabel={true}
                         />
                         {errors.firstName && (
                             <p className="text-xs text-red-500 mt-1">
@@ -185,6 +170,7 @@ const ModifyUserModal = ({
                                 setUser({ ...user, lastName: value })
                             }
                             label="Last Name"
+                            withLabel={true}
                         />
                         {errors.lastName && (
                             <p className="text-xs text-red-500 mt-1">
@@ -199,6 +185,7 @@ const ModifyUserModal = ({
                         val={user.email}
                         setVal={(value) => setUser({ ...user, email: value })}
                         label="Email"
+                        withLabel={true}
                     />
                     {errors.email && (
                         <p className="text-xs text-red-500 mt-1">

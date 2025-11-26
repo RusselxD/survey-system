@@ -47,3 +47,28 @@ export const getSurveyData = (uuid) => {
 
     return survey;
 };
+
+import apiClient from "./axiosConfig";
+
+export const surveyAPI = {
+    getSurveys: () => apiClient.get("/Surveys"),
+
+    getSurveyToEdit: (id) => apiClient.get(`/Surveys/to-edit/${id}`),
+
+    createSurvey: (surveyData) => apiClient.post("/Surveys", surveyData),
+
+    updateSurvey: (id, surveyData) =>
+        apiClient.put(`/Surveys/${id}`, surveyData),
+};
+
+export const locationsAPI = {
+    getLocations: () => apiClient.get("/Locations"),
+};
+
+export const serviceTypesAPI = {
+    getServiceTypes: () => apiClient.get("/ServiceTypes"),
+};
+
+export const questionTypesAPI = {
+    getQuestionTypes: () => apiClient.get("/QuestionTypes"),
+};

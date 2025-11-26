@@ -92,7 +92,7 @@ const UserManagementContainer = ({
         useState(false);
 
     return (
-        <div className="container p-3 sm:p-4 lg:p-5 mb-3 dark:bg-base-300 bg-white h-fit">
+        <div className="custom-container p-3 sm:p-4 lg:p-5 mb-3 dark:bg-base-300 bg-white h-fit">
             <h1 className="custom-primary-txt font-semibold">
                 Users Management
             </h1>

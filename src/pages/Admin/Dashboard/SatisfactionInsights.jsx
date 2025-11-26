@@ -121,7 +121,7 @@ const SatisfactionInsights = ({ currentWeek, data }) => {
     const { location, serviceType } = data;
 
     return (
-        <div className="container px-5 py-7 flex flex-col mb-8 dark:bg-base-300">
+        <div className="custom-container px-5 py-7 flex flex-col mb-8 dark:bg-base-300">
             <h1 className="flex items-center custom-primary-txt space-x-2 text-xl font-semibold mb-5 border-b-2 pb-3 border-gray-300">
                 <Star/>
                 <span>Satisfaction Insights</span>

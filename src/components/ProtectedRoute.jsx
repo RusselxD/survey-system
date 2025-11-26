@@ -2,7 +2,12 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export function ProtectedRoute({ children, requiredPermissions }) {
-    const { user, hasPermission, hasAllPermissions } = useAuth();
+    const { user, hasPermission, hasAllPermissions, loading } = useAuth();
+
+    // Show nothing while checking authentication
+    if (loading) {
+        return null;
+    }
 
     // Not logged in
     if (!user) {

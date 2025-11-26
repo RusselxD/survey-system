@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useAuth } from '../../../../../context/AuthContext';
 import { Plus } from 'lucide-react';
-import { TextInput } from './ManageRolesContainer';
+import TextInput from '../../../../../components/TextInput';
 import { rolesAPI } from '../../../../../utils/api/users';
 
 const AddNewRole = ({ addRoleInList }) => {

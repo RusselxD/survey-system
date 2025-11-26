@@ -6,7 +6,6 @@ import SurveyInformations from "./SurveyInformation/SurveyInformations";
 import { useEffect, useState } from "react";
 import { getSurveyData } from "../../../../utils/api/survey";
 
-
 const SurveyPage = () => {    
 
     const { uuid } = useParams();
@@ -39,7 +38,7 @@ const SurveyPage = () => {
 
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1">
-            <div className="container bg-white dark:bg-base-300 p-3 sm:p-4 lg:p-7">
+            <div className="custom-container bg-white dark:bg-base-300 p-3 sm:p-4 lg:p-7">
                 {/* Header */}
                 <h3 className="font-semibold text-xl border-b pb-3 border-gray-400 custom-primary-txt">
                     {survey.title}

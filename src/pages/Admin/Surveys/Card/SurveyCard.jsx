@@ -31,13 +31,16 @@ const ResponseAndQuestionsCount = ({ responsesCount, questionsCount }) => {
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ">
                 <FileText size={14} className="sm:w-4 sm:h-4" />
-                <p>{questionsCount} questions</p>
+                <p>{questionsCount} {questionsCount === 1 ? "question" : "questions"}</p>
             </div>
         </div>
     );
 };
 
 const SurveyCard = ({ survey }) => {
+
+    console.log(survey)
+
     const navigate = useNavigate();
 
     const [qrModalIsOpen, setQrModalIsOpen] = useState(false);
@@ -47,11 +50,11 @@ const SurveyCard = ({ survey }) => {
     const [previewModalSurveyUUID, setPreviewModalSurveyUUID] = useState(null);
 
     return (
-        <div className="card dark:bg-gray-700 bg-white dark:border-0 border border-gray-300 w-full max-w-sm shadow-sm hover:shadow-md transition-shadow relative">
-            {survey.imageUrl && (
+        <div className="card dark:bg-gray-700 bg-gray-100 dark:border-0 border border-gray-300 w-full max-w-sm shadow-sm hover:shadow-md transition-shadow relative">
+            {survey.coverImageUrl && (
                 <figure className="relative aspect-video overflow-hidden">
                     <img
-                        src={survey.imageUrl}
+                        src={survey.coverImageUrl}
                         alt={survey.title}
                         className="w-full h-full object-cover"
                     />
@@ -60,27 +63,27 @@ const SurveyCard = ({ survey }) => {
             )}
 
             {/* Status Badge for no image */}
-            {!survey.imageUrl && getStatusBadge(survey.status)}
+            {!survey.coverImageUrl && getStatusBadge(survey.status)}
 
             <div className="card-body p-4 sm:p-5 ">
                 <h2
-                    className={`text-base sm:text-lg font-semibold custom-primary-txt truncate ${
-                        !survey.imageUrl ? "pr-24 sm:pr-28" : ""
+                    className={`text-base font-semibold custom-primary-txt truncate ${
+                        !survey.coverImageUrl ? "pr-24 sm:pr-28" : ""
                     }`}
                 >
                     {survey.title}
                 </h2>
 
                 <div className="flex flex-col justify-between flex-1 ">
-                    <p className="text-xs sm:text-sm leading-5 sm:leading-6 custom-sec-txt line-clamp-3 break-words">
+                    <p className={`text-xs sm:text-sm leading-5 sm:leading-6 custom-sec-txt line-clamp-3 break-words ${survey.description ? "" : "italic"}`}>
                         {survey.description || "No description provided yet."}
                     </p>
 
                     <div className="mt-2">
                         {survey.status.toLowerCase() !== "draft" && (
                             <ResponseAndQuestionsCount
-                                responsesCount={survey.responsesCount}
-                                questionsCount={survey.questionsCount}
+                                responsesCount={survey.responseCount}
+                                questionsCount={survey.questionCount}
                             />
                         )}
 
@@ -88,7 +91,7 @@ const SurveyCard = ({ survey }) => {
                             <p className="text-xs dark:text-yellow-400 text-orange-500">
                                 Last Edited:{" "}
                                 {formatDistanceToNow(
-                                    new Date(survey.updated_at),
+                                    new Date(survey.updatedAt),
                                     { addSuffix: true }
                                 )}
                             </p>
@@ -115,7 +118,9 @@ const SurveyCard = ({ survey }) => {
 
                             {survey.status === "draft" && (
                                 <>
-                                    <button className="bg-green-600 hover:bg-green-700 border border-green-700 text-white px-3 sm:px-4 py-1.5 sm:py-2.5 text-xs rounded-md transition-all active:scale-95 inline-flex items-center">
+                                    <button onClick={() => {
+                                        navigate(`/admin/surveys/${survey.id}/edit`);
+                                    }} className="bg-green-600 hover:bg-green-700 border border-green-700 text-white px-3 sm:px-4 py-1.5 sm:py-2.5 text-xs rounded-md transition-all active:scale-95 inline-flex items-center">
                                         Continue Editing
                                     </button>
                                     <button

@@ -22,11 +22,17 @@ export const getMainMetricsData = () => {
     // mock data
     return {
         totalSurveys: (2562262300).toLocaleString(),
-        totalResponses: (123867000).toLocaleString(),
-        avgSatisfaction: `${(4.2).toFixed(1)}/5`,
+        totalResponses: (345600).toLocaleString(),
+        totalViews: (423867).toLocaleString(),
         completionRate: `${(98).toFixed(0)}%`,
-        netPromoterScore: 90,
-        csat: `${(90).toFixed(0)}%`,
+        activeSurveys: (120).toLocaleString(),
+        responsesThisWeek: (1500).toLocaleString(),
+        averageQuestions: 8.9,
+        averageResponses: (108).toLocaleString(),
+        // avgSatisfaction: `${(4.2).toFixed(1)}/5`,
+        // completionRate: `${(98).toFixed(0)}%`,
+        // netPromoterScore: 90,
+        // csat: `${(90).toFixed(0)}%`,
     };
 };
 

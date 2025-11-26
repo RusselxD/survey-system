@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput } from "../ManageRolesContainer/ManageRolesContainer";
+import TextInput from "../../../../../components/TextInput";
 import Password from "./Password";
 import { usersAPI } from "../../../../../utils/api/users";
 import { useAuth } from "../../../../../context/AuthContext";
@@ -130,9 +130,7 @@ const AddUserContainer = ({ roles, addUserToList }) => {
 
             toastSuccess("User created successfully");
         } catch (error) {
-            toastError(
-                error.response?.data?.message || "Failed to create user"
-            );
+            toastError(error.response?.data || "Failed to create user");
         } finally {
             setIsCreating(false);
         }
@@ -140,7 +138,7 @@ const AddUserContainer = ({ roles, addUserToList }) => {
 
     return (
         <div className="pl-2 pb-2">
-            <div className="grid lg:grid-cols-2">
+            <div className="grid md:grid-cols-2">
                 <div className="flex flex-col space-y-2">
                     <div>
                         <TextInput

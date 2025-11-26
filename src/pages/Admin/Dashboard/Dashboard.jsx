@@ -1,5 +1,5 @@
 import DashboardSkeleton from "./DashboardSkeleton";
-import MainMetrics from "./MainMetrics";
+import MainMetrics from "./HeroMetrics.jsx";
 import ResponseInsights from "./ResponseInsights";
 import SatisfactionInsights from "./SatisfactionInsights";
 import { SatisfactionTrendChart } from "./SatisfactionTrendChart";
@@ -14,6 +14,8 @@ import {
     getSatisfactionInsightsData,
     getResponseInsightsData,
 } from "../../../utils/api/dashboard.js";
+import SupportingMetrics from "./SupportingMetrics.jsx";
+import SurveyComposition from "./SurveyComposition.jsx";
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -26,7 +28,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             // Simulate API calls with delays
-            // await new Promise((resolve) => setTimeout(resolve, 1000));
+            // await new Promise((resolve) => setTimeout(resolve, 1000000));
             const metricsData = getMainMetricsData();
             setMainMetricsData(metricsData);
 
@@ -51,10 +53,12 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="p-0 sm:p-1 md:p-3 lg:p-8 dark:bg-base-100 bg-gray-100/70 flex-1">
+        <div className="p-0 sm:p-1 md:p-3 lg:p-8 dark:bg-base-100 bg-gray-100/70 flex-1 space-y-5">
             <MainMetrics data={mainMetricsData} />
-            <div className=" flex flex-col">
-                <div className="container h-[30rem] dark:bg-base-300 bg-white py-8 mb-8 px-5">
+            <SupportingMetrics />
+            <SurveyComposition />
+            {/* <div className=" flex flex-col">
+                <div className="custom-container h-[30rem] dark:bg-base-300 bg-white py-8 mb-8 px-5">
                     <SatisfactionTrendChart />
                 </div>
                 <SatisfactionInsights
@@ -84,21 +88,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* <div className="w-full h-[25rem] py-8 flex justify-between border-b-2 border-gray-300">
-                    <div className="w-[30%] h-full border-r-2 border-gray-300 pr-10 ">
-                        <NPSPieChart />
-                    </div>
-                    <div className="w-[70%] h-full pl-10 ">
-                        <ResponseTimeDistribution />
-                    </div>
-                </div>
-                <div className="border-b-2 border-gray-300 py-3">
-                    <LocationsRatingsChart />
-                </div>
-                <div className="border-b-2 border-gray-300 py-3">
-                    <ServiceTypesRatingsChart />
-                </div> */}
-            </div>
+            </div> */}
         </div>
     );
 };

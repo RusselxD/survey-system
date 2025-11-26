@@ -6,7 +6,7 @@ export function Unauthorized() {
 
     return (
         <div className="min-h-screen flex items-center justify-center dark:bg-base-100 bg-gray-100/70 p-4">
-            <div className="container max-w-3xl p-6 sm:p-8 md:p-10 dark:bg-base-300 bg-white rounded-xl shadow-2xl">
+            <div className="custom-container max-w-3xl p-6 sm:p-8 md:p-10 dark:bg-base-300 bg-white rounded-xl shadow-2xl">
                 <div className="text-center">
                     {/* 403 Icon with Animation */}
                     <div className="mb-4 sm:mb-6">

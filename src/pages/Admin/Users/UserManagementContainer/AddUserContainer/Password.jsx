@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { TextInput } from "../ManageRolesContainer/ManageRolesContainer";
+import { useState } from "react";
+import TextInput from "../../../../../components/TextInput";
 
 const Password = ({
     password,

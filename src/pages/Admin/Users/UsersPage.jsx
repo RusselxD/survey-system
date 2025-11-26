@@ -5,6 +5,7 @@ import ModifyUserModal from "./ModifyUserModal/ModifyUserModal";
 import UsersTable from "./UsersTable";
 import UserManagementContainer from "./UserManagementContainer/UserManagementContainer";
 import { useAuth } from "../../../context/AuthContext";
+import FailedToLoad from "../../../components/reusable/FailedToLoad";
 
 const UsersPage = () => {
     const [users, setUsers] = useState([]);
@@ -12,6 +13,7 @@ const UsersPage = () => {
     const [permissions, setPermissions] = useState([]);
 
     const [isLoading, setIsLoading] = useState(true);
+    const [errorLoadingUsers, setErrorLoadingUsers] = useState(false);
 
     const [modifyUserModalisOpen, setModifyUserModalisOpen] = useState(false);
     const [selectedUserToModify, setSelectedUserToModify] = useState(null);
@@ -72,6 +74,7 @@ const UsersPage = () => {
             setIsLoading(true);
 
             try {
+                await new Promise((resolve) => setTimeout(resolve, 2000));
                 const usersRes = await usersAPI.getUsers();
                 setUsers(usersRes.data);
 
@@ -80,8 +83,10 @@ const UsersPage = () => {
 
                 const permissionsRes = await permissionsAPI.getPermissions();
                 setPermissions(permissionsRes.data);
+
+                
             } catch (error) {
-                console.log(error);
+                setErrorLoadingUsers(true);
                 toastError(error.message || "Something went wrong.");
             } finally {
                 setIsLoading(false);
@@ -92,6 +97,10 @@ const UsersPage = () => {
 
     if (isLoading) {
         return <UsersPageSkeleton />;
+    }
+
+    if (errorLoadingUsers) {
+        return <FailedToLoad />;
     }
 
     return (
@@ -106,7 +115,7 @@ const UsersPage = () => {
                 setPermissions={setPermissions}
             />
 
-            <div className="container p-3 sm:p-4 lg:p-5 dark:bg-base-300 bg-white flex-1">
+            <div className="custom-container p-3 sm:p-4 lg:p-5 dark:bg-base-300 bg-white flex-1">
                 <UsersTable
                     users={users}
                     roles={roles}

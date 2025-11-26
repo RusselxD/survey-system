@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../../../../context/AuthContext";
-import { Check, Pencil, Trash, X } from "lucide-react";
-import { TextInput } from "./ManageRolesContainer";
-import ConfirmDeleteModal from "../../../../../components/ConfirmDeleteModal";
+import { Pencil, Trash, X } from "lucide-react";
+import ConfirmDeleteModal from "../../../../../components/reusable/ConfirmDeleteModal";
+import TextInput from "../../../../../components/TextInput";
 import { rolesAPI } from "../../../../../utils/api/users";
-import { is } from "date-fns/locale";
 
 const DynamicButtons = ({
     isUpdating,
@@ -183,6 +182,7 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
                                             val={newRoleName}
                                             setVal={setNewRoleName}
                                             label="Role Name"
+                                            withLabel={false}
                                         />
                                     ) : (
                                         <span> {role.name}</span>
@@ -195,6 +195,7 @@ const RolesTable = ({ roles, updateRoleInList, deleteRoleFromList }) => {
                                             val={newRoleDescription}
                                             setVal={setNewRoleDescription}
                                             label="Role Description"
+                                            withLabel={false}
                                         />
                                     ) : (
                                         <span> {role.description}</span>

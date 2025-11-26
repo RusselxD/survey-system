@@ -9,6 +9,7 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [permissions, setPermissions] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const hasPermission = (permissionName) => {
         return permissions.includes(permissionName);
@@ -50,7 +51,6 @@ export function AuthProvider({ children }) {
                         });
 
                         setPermissions(permissionsArray);
-                        console.log(user)
                     } else {
                         console.log("Token expired, removing...");
                         localStorage.removeItem("token");
@@ -60,6 +60,7 @@ export function AuthProvider({ children }) {
                     localStorage.removeItem("token");
                 }
             }
+            setLoading(false);
         };
         decodeTokenOnLoad();
     }, []);
@@ -91,7 +92,6 @@ export function AuthProvider({ children }) {
                 permissions: permissionsArray,
                 forceUpdatePassword: forceUpdatePassword,
             });
-
         } catch (error) {
             // Re-throw the error so Login.jsx can catch it
             throw error;
@@ -175,6 +175,7 @@ export function AuthProvider({ children }) {
                 hasAllPermissions,
                 toastSuccess,
                 toastError,
+                loading,
             }}
         >
             {children}

@@ -24,6 +24,7 @@ import UsersPage from "./pages/Admin/Users/UsersPage.jsx";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import NotFound from "./components/NotFound.jsx";
 import ForceUpdatePassword from "./pages/Admin/Login/ForceUpdatePassword.jsx";
+import CreateNewSurvey from "./pages/Admin/Surveys/CreateNewSurvey/CreateNewSurvey.jsx";
 
 const router = createBrowserRouter([
     {
@@ -56,17 +57,15 @@ const router = createBrowserRouter([
             { path: "analytics", element: <Analytics /> },
             { path: "surveys", element: <Surveys /> },
             { path: "surveys/:uuid", element: <SurveyPage /> },
+            { path: "surveys/new", element: <CreateNewSurvey /> },
+            { path: "surveys/:id/edit", element: <CreateNewSurvey /> },
             {
                 path: "responses",
                 element: <Responses />,
             },
             {
                 path: "users",
-                element: (
-                    <ProtectedRoute>
-                        <UsersPage />
-                    </ProtectedRoute>
-                ),
+                element: <UsersPage />,
             },
             { path: "settings", element: <Settings /> },
         ],
