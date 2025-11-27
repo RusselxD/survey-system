@@ -74,7 +74,7 @@ const ButtonsContainer = ({
 };
 
 const UserManagementContainer = ({
-    addUserToList, 
+    addUserToList,
 
     roles,
     updateRoleInList,
@@ -115,7 +115,11 @@ const UserManagementContainer = ({
                 }`}
             >
                 {hasPermission("users.manage") && addUserIsOpen && (
-                    <AddUserContainer roles={roles} addUserToList={addUserToList} />
+                    <AddUserContainer
+                        roles={roles}
+                        addUserToList={addUserToList}
+                        setAddUserIsOpen={setAddUserIsOpen}
+                    />
                 )}
                 {hasPermission("roles.manage") && (
                     <>

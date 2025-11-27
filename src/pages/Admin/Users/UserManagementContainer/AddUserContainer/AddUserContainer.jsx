@@ -33,7 +33,7 @@ const Roles = ({ roles, role, setRole }) => {
     );
 };
 
-const AddUserContainer = ({ roles, addUserToList }) => {
+const AddUserContainer = ({ roles, addUserToList, setAddUserIsOpen }) => {
     const { toastError, toastSuccess } = useAuth();
 
     const [role, setRole] = useState(roles[0]?.id || null);
@@ -199,7 +199,12 @@ const AddUserContainer = ({ roles, addUserToList }) => {
                         errors={errors}
                     />
                     <div className="mt-2 flex justify-end gap-2 text-xs">
-                        <button className="px-3 py-2 dark:border-gray-300 border-gray-500 transition-colors rounded-md border dark:hover:text-gray-800 hover:text-white dark:hover:bg-gray-300 hover:bg-gray-500 w-fit dark:text-white text-gray-600">
+                        <button
+                            onClick={() => {
+                                setAddUserIsOpen(false);
+                            }}
+                            className="px-3 py-2 dark:border-gray-300 border-gray-500 transition-colors rounded-md border dark:hover:text-gray-800 hover:text-white dark:hover:bg-gray-300 hover:bg-gray-500 w-fit dark:text-white text-gray-600"
+                        >
                             Cancel
                         </button>
                         <button
