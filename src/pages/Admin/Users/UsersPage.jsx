@@ -84,7 +84,7 @@ const UsersPage = () => {
                 const permissionsRes = await permissionsAPI.getPermissions();
                 setPermissions(permissionsRes.data);
 
-                
+                setErrorLoadingUsers(false);
             } catch (error) {
                 setErrorLoadingUsers(true);
                 toastError(error.message || "Something went wrong.");

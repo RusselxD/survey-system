@@ -31,13 +31,21 @@ const supportingMetrics = [
     },
 ];
 
-const SupportingMetrics = () => {
+const SupportingMetrics = ({ data }) => {
+
+    const {totalViews, activeSurveys, responsesThisWeek, avgTimeToCompleteMinutes} = data || {};
+
+    supportingMetrics[0].data = totalViews;
+    supportingMetrics[1].data = activeSurveys;
+    supportingMetrics[2].data = responsesThisWeek;
+    supportingMetrics[3].data = avgTimeToCompleteMinutes + " min";
+
     return (
         <div className=" gap-5 grid grid-cols-1 md:grid-cols-2">
             {supportingMetrics.map((metric, i) => {
                 return (
                     <div
-                        className={`stat dark:bg-gray-800 bg-white p-5 border dark:border-gray-600 shadow-md rounded-md`}
+                        className={`stat dark:bg-base-200 bg-white p-5 border dark:border-gray-700 shadow-md rounded-md`}
                         key={i}
                     >
                         <div className="stat-figure rounded-full ">

@@ -3,7 +3,7 @@ import { MessageSquare, CircleCheck, TrendingUp } from "lucide-react";
 const primaryMetrics = [
     {
         title: "Total Responses",
-        value: (345600).toLocaleString(),
+        value: 0,
         desc: "All submissions",
         icon: MessageSquare,
         borderColor: "border-orange-500",
@@ -28,6 +28,13 @@ const primaryMetrics = [
 ];
 
 const HeroMetrics = ({ data }) => {
+
+    const {totalResponses, responseRate, completionRate} = data || {};
+
+    primaryMetrics[0].value = totalResponses;
+    primaryMetrics[1].value = responseRate + "%";
+    primaryMetrics[2].value = completionRate + "%";
+
     return (
         <div>
             <div className=" grid grid-cols-3 gap-5">

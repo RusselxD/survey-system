@@ -2,34 +2,39 @@ import { BarChart3, FileText, MessageSquare } from "lucide-react";
 
 const surveyCompositionData = [
     {
-        title: "Avg Questions",
-        desc: "8.9 per survey",
+        title: "Total Surveys",
+        desc: "all time",
+        data: (23423).toLocaleString(),
+        icon: BarChart3,
+        iconBg: "bg-indigo-500/20",
+        iconColor: "text-indigo-400",
+    },
+    {
+        title: "Avg Questions per survey",
+        desc: "per survey",
         data: 8.9,
         icon: FileText,
         iconBg: "bg-pink-500/20",
         iconColor: "text-pink-400",
     },
     {
-        title: "Avg Responses",
-        desc: "108 per survey",
+        title: "Avg Responses per survey",
+        desc: "per survey",
         data: 108,
         icon: MessageSquare,
         iconBg: "bg-blue-500/20",
         iconColor: "text-blue-400",
     },
-    {
-        title: "Total Surveys",
-        desc: "All time created",
-        data: (23423).toLocaleString(),
-        icon: BarChart3,
-        iconBg: "bg-indigo-500/20",
-        iconColor: "text-indigo-400",
-    },
 ];
 
-const SurveyComposition = () => {
+const SurveyComposition = ({ data }) => {
+    const { totalSurveys, avgQuestions, avgResponses } = data || {};
+
+    surveyCompositionData[0].data = totalSurveys;
+    surveyCompositionData[1].data = avgQuestions;
+    surveyCompositionData[2].data = avgResponses;
     return (
-        <div className="dark:bg-gray-800 bg-white p-5 border dark:border-gray-600 shadow-md rounded-md">
+        <div className="dark:bg-base-200 bg-white p-5 border dark:border-gray-700 shadow-md rounded-md">
             <h1 className="flex gap-2 ">
                 <BarChart3 className="text-blue-400" />
                 <span className=" font-medium custom-primary-txt">
@@ -37,28 +42,31 @@ const SurveyComposition = () => {
                 </span>
             </h1>
 
-            <div className="flex flex-col gap-6 mt-6">
+            <div className="flex gap-6 mt-6">
                 {surveyCompositionData.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-5">
+                    <div
+                        key={idx}
+                        className=" flex-1 flex justify-center py-3 gap-5 items-center"
+                    >
                         <div
                             className={`p-3 flex items-center justify-center rounded-lg ${item.iconBg}`}
                         >
                             {/* Icon per item, you can swap for different Lucide icons if desired */}
                             <item.icon
                                 className={`${item.iconColor}`}
-                                size={20}
+                                size={25}
                             />
                         </div>
-                        <div className="flex-1">
-                            <div className="text-[0.70rem] text-gray-400 dark:text-gray-300">
+                        <div>
+                            <div className="text-2xl my-1 font-semibold text-white dark:text-white">
+                                {item.data}
+                            </div>
+                            <div className="text-xs text-gray-400 dark:text-gray-300">
                                 {item.title}
                             </div>
-                            <div className="custom-primary-txt font-medium">
+                            {/* <div className="text-xs custom-primary-txt">
                                 {item.desc}
-                            </div>
-                        </div>
-                        <div className="text-lg font-medium text-white dark:text-white">
-                            {item.data}
+                            </div> */}
                         </div>
                     </div>
                 ))}

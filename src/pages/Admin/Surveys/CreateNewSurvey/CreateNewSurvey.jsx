@@ -99,6 +99,7 @@ const CreateNewSurvey = () => {
                         setQuestions(formattedQuestions);
                     }
                 }
+                errorLoadingInitialData(false);
             } catch (error) {
                 setErrorLoadingInitialData(true);
                 toastError(error.message || "Failed to load initial data.");

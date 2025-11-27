@@ -185,6 +185,7 @@ const Surveys = () => {
                 await new Promise((resolve) => setTimeout(resolve, 1000));
                 const res = await surveyAPI.getSurveys();
                 setSurveys(res.data);
+                setErrorLoadingSurveys(false);
             } catch (error) {
                 setErrorLoadingSurveys(true);
                 toastError(error.message || "Failed to load surveys.");
