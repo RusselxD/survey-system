@@ -1,10 +1,3 @@
-/**
- * Downloads a file from a URL using blob conversion
- * @param {string} url - The URL of the file to download
- * @param {string} filename - The desired filename for the download
- * @returns {Promise<void>}
- * @throws {Error} If the download fails
- */
 export const downloadFile = async (url, filename) => {
     try {
         // Fetch the file as a blob
@@ -33,11 +26,6 @@ export const downloadFile = async (url, filename) => {
     }
 };
 
-/**
- * Helper function to sanitize a string for use as a filename
- * @param {string} text - The text to sanitize
- * @returns {string} - Sanitized filename-safe string
- */
 export const sanitizeFilename = (text) => {
     return text.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 };

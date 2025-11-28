@@ -27,6 +27,7 @@ export const rolesAPI = {
     deleteRole: (roleId) => apiClient.delete(`/Roles/${roleId}`),
 };
 
+// Permissions are immutable, so only a GET endpoint is provided
 export const permissionsAPI = {
     getPermissions: () => apiClient.get("/Permissions"),
 };

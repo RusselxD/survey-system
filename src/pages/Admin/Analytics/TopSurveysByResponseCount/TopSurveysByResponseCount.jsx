@@ -51,9 +51,9 @@ const TopSurveysByResponseCount = () => {
             </h1>
 
             <div className="flex flex-col max-h-[22rem] overflow-auto">
-                {[...surveys, ...surveys, ...surveys].map((survey, i) => {
+                {surveys.map((survey, i) => {
                     return (
-                        <div className={` ${i < 15 - 1 ? 'border-b dark:border-gray-600' : ''} py-4 flex items-center`}>
+                        <div className={` ${i < surveys.length - 1 ? 'border-b dark:border-gray-600' : ''} py-4 flex items-center`}>
                             <p className="text-xs dark:bg-gray-800 flex items-center justify-center w-7 h-7 rounded-full dark:text-gray-300 mr-2">
                                 {i + 1}
                             </p>
