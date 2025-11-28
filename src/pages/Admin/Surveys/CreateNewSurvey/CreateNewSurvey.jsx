@@ -5,7 +5,7 @@ import {
     questionTypesAPI,
     serviceTypesAPI,
     surveyAPI,
-} from "../../../../utils/api/survey";
+} from "../../../../utils/api/models/survey";
 import { useAuth } from "../../../../context/AuthContext";
 import Questions from "./Questions/Questions";
 import { uploadAPI } from "../../../../utils/api/upload";
@@ -99,7 +99,7 @@ const CreateNewSurvey = () => {
                         setQuestions(formattedQuestions);
                     }
                 }
-                errorLoadingInitialData(false);
+                setErrorLoadingInitialData(false);
             } catch (error) {
                 setErrorLoadingInitialData(true);
                 toastError(error.message || "Failed to load initial data.");

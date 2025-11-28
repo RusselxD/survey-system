@@ -1,6 +1,5 @@
-import { Pencil, Shield, UserPlus, Users } from "lucide-react";
-import { useEffect, useState } from "react";
-import { rolesAPI } from "../../../../utils/api/users";
+import { Shield, UserPlus, Users } from "lucide-react";
+import { useState } from "react";
 import ManageRolesContainer from "./ManageRolesContainer/ManageRolesContainer";
 import PermissionSettingsContainer from "./PermissionSettingsContainer/PermissionSettingsContainer";
 import { useAuth } from "../../../../context/AuthContext";

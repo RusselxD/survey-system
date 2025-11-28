@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { useAuth } from '../../../../../context/AuthContext';
-import { Plus } from 'lucide-react';
-import TextInput from '../../../../../components/TextInput';
-import { rolesAPI } from '../../../../../utils/api/users';
+import React, { useState } from "react";
+import { useAuth } from "../../../../../context/AuthContext";
+import { Plus } from "lucide-react";
+import TextInput from "../../../../../components/TextInput";
+import { rolesAPI } from "../../../../../utils/api/models/users";
 
 const AddNewRole = ({ addRoleInList }) => {
     const { toastError, toastSuccess } = useAuth();
@@ -33,10 +33,8 @@ const AddNewRole = ({ addRoleInList }) => {
             setNewRoleName("");
             setNewRoleDescription("");
         } catch (error) {
-            console.log(error)
-            toastError(
-                error.message || "Something went wrong."
-            );
+            console.log(error);
+            toastError(error.message || "Something went wrong.");
         } finally {
             setIsAdding(false);
         }
@@ -93,4 +91,4 @@ const AddNewRole = ({ addRoleInList }) => {
     );
 };
 
-export default AddNewRole
+export default AddNewRole;

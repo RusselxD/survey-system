@@ -3,7 +3,7 @@ import CardsContainer from "./CardsContainer";
 import { useAuth } from "../../../context/AuthContext";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { surveyAPI } from "../../../utils/api/survey";
+import { surveyAPI } from "../../../utils/api/models/survey";
 import SurveysSkeleton from "./SurveysSkeleton";
 import FailedToLoad from "../../../components/reusable/FailedToLoad";
 

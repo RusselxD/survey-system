@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import ResponseTrend from "./ResponseTrendLineChart/ResponseTrend";
+import React, { useEffect, useState } from "react";
 import CompletionTimeDistChart from "./CompletionTimeDistribution/CompletionTimeDistChart";
 import TopSurveysByResponse from "./TopSurveysByResponseRate/TopSurveysByResponse";
 import EngagementFunnel from "./EngagementFunnel/EngagementFunnel";
 import ResponsesByLocation from "./ResponsesByLocation/ResponsesByLocation";
-
-const respondTrendsData = {
-    labels: ["Nov 8", "Nov 7", "Nov 6", "Nov 5", "Nov 4", "Nov 3", "Nov 2"],
-    responseCounts: [900, 618, 434, 899, 1234, 1127, 788],
-};
+import ResponseTrendContainer from "./ResponseTrendLineChart/ResponseTrendContainer";
+import TopSurveysByResponseRateContainer from "./TopSurveysByResponseRate/TopSurveysByResponseRateContainer";
+import TopSurveysByResponseCount from "./TopSurveysByResponseCount/TopSurveysByResponseCount";
 
 const topSurveyByResponsesData = {
     surveys: [
@@ -17,10 +14,9 @@ const topSurveyByResponsesData = {
         "Employee Pulse Check",
         "Event Feedback Survey",
         "Onboarding Experience",
-        "Website Usability Test",
     ],
-    responseRates: [92, 85, 78, 71, 68, 55],
-    responseCounts: [1840, 1275, 936, 568, 408, 275],
+    responseRates: [92, 85, 78, 71, 68],
+    responseCounts: [1840, 1275, 936, 568, 408],
 };
 
 // Top Surveys By Response Count
@@ -82,22 +78,16 @@ const responsesByLocationData = {
 };
 
 const Analytics = () => {
-    const [days, setDays] = useState(7);
+    const [days, setDays] = useState(10);
 
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 flex flex-col gap-3">
-            <div className="custom-container h-[27rem] w-full sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
-                <ResponseTrend dataset={respondTrendsData} days={days} />
-            </div>
+            <ResponseTrendContainer days={days} />
 
             {/* Top Surveys by Response Rate & Response Count */}
-            <div className="flex gap-3">
-                <div className="custom-container h-[27rem] w-[60%] sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
-                    <TopSurveysByResponse dataset={topSurveyByResponsesData} />
-                </div>
-                <div className="custom-container h-[27rem] flex-1 sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
-                    <p className="text-white">Top Surveys By Response Count</p>
-                </div>
+            <div className="flex gap-3 h-[27rem]">
+                <TopSurveysByResponseRateContainer />
+                <TopSurveysByResponseCount />
             </div>
 
             {/* Completion Time Distribution and Engagement Funnel */}

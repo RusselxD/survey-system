@@ -181,16 +181,42 @@ const TopSurveysByResponse = ({ dataset, sortBy = "responseRate" }) => {
                     },
                     ticks: {
                         font: {
-                            size: 12,
+                            size: 14,
                         },
                         color: textColor,
                         crossAlign: "far",
+                        callback: function (value) {
+                            const label = this.getLabelForValue(value);
+                            const maxWidth = 150; // Maximum width in pixels
+
+                            // Create a temporary canvas context to measure text
+                            const ctx = this.chart.ctx;
+                            ctx.font = "12px sans-serif"; // Match your font size
+
+                            let width = ctx.measureText(label).width;
+
+                            if (width <= maxWidth) {
+                                return label;
+                            }
+
+                            // Truncate until it fits
+                            let truncated = label;
+                            while (width > maxWidth && truncated.length > 0) {
+                                truncated = truncated.slice(0, -1);
+                                width = ctx.measureText(
+                                    truncated + "..."
+                                ).width;
+                            }
+
+                            return truncated + "...";
+                        },
                     },
                 },
             },
             layout: {
                 padding: {
-                    right: 60, // Space for percentage labels
+                    left: 5,
+                    right: 50, // Space for percentage labels
                 },
             },
         }),

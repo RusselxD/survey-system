@@ -48,7 +48,7 @@ export const getSurveyData = (uuid) => {
     return survey;
 };
 
-import apiClient from "./axiosConfig";
+import apiClient from "../axiosConfig";
 
 export const surveyAPI = {
     getSurveys: () => apiClient.get("/Surveys"),

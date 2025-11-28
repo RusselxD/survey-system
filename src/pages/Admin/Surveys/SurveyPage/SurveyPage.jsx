@@ -4,10 +4,9 @@ import Metrics from "./Metrics/Metrics";
 import QuestionsAndPerformance from "./QuestionsAndPerformance/QuestionsAndPerformance";
 import SurveyInformations from "./SurveyInformation/SurveyInformations";
 import { useEffect, useState } from "react";
-import { getSurveyData } from "../../../../utils/api/survey";
+import { surveyAPI } from "../../../../utils/api/models/survey";
 
-const SurveyPage = () => {    
-
+const SurveyPage = () => {
     const { uuid } = useParams();
 
     const [survey, setSurvey] = useState(null);
@@ -16,7 +15,7 @@ const SurveyPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const surveyData = await getSurveyData(uuid);
+                const surveyData = await surveyAPI.getSurveyData(uuid);
                 setSurvey(surveyData);
             } catch (error) {
                 console.error("Failed to fetch survey data:", error);

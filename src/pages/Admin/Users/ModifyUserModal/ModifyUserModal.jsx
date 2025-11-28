@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usersAPI } from "../../../../utils/api/users";
+import { usersAPI } from "../../../../utils/api/models/users";
 import ModalXButton from "../../../../components/reusable/ModalXButton";
 import { useAuth } from "../../../../context/AuthContext";
 import ConfirmDeleteContainer from "./ConfirmDeleteContainer";

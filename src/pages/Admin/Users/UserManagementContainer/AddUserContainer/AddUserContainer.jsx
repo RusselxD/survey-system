@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TextInput from "../../../../../components/TextInput";
 import Password from "./Password";
-import { usersAPI } from "../../../../../utils/api/users";
+import { usersAPI } from "../../../../../utils/api/models/users";
 import { useAuth } from "../../../../../context/AuthContext";
 
 const Roles = ({ roles, role, setRole }) => {

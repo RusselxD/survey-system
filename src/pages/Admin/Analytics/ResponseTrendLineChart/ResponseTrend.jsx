@@ -73,6 +73,10 @@ const ResponseTrend = ({ dataset, days }) => {
         ? "rgba(255, 255, 255, 0.1)"
         : "rgba(0, 0, 0, 0.1)";
 
+    const largestValue = Math.max(...responseCounts);
+    // console.log(largestValue)
+    console.log(largestValue === 0 ? 10 : Math.ceil(largestValue * 1.2))
+
     // Chart.js configuration options (memoized to avoid recreating on every render)
     const options = useMemo(
         () => ({
@@ -119,7 +123,8 @@ const ResponseTrend = ({ dataset, days }) => {
             scales: {
                 y: {
                     min: 0,
-                    max: Math.trunc(Math.max(...responseCounts) * 1.1), // Add 10% padding to the max value
+                    max:
+                        largestValue === 0 ? 10 : Math.ceil(largestValue * 1.1), // Add 20% padding to the max value
                     ticks: {
                         callback: function (value) {
                             return value;

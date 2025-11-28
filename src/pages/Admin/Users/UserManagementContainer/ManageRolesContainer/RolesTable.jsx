@@ -3,7 +3,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { Pencil, Trash, X } from "lucide-react";
 import ConfirmDeleteModal from "../../../../../components/reusable/ConfirmDeleteModal";
 import TextInput from "../../../../../components/TextInput";
-import { rolesAPI } from "../../../../../utils/api/users";
+import { rolesAPI } from "../../../../../utils/api/models/users";
 
 const DynamicButtons = ({
     isUpdating,

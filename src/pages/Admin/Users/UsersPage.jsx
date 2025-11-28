@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { permissionsAPI, rolesAPI, usersAPI } from "../../../utils/api/users";
+import { permissionsAPI, rolesAPI, usersAPI } from "../../../utils/api/models/users";
 import UsersPageSkeleton from "./UsersPageSkeleton";
 import ModifyUserModal from "./ModifyUserModal/ModifyUserModal";
 import UsersTable from "./UsersTable";

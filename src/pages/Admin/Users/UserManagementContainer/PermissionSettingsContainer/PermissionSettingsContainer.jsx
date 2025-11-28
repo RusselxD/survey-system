@@ -1,8 +1,10 @@
 import { ChevronDown } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import GroupedPermissions from "./GroupedPermissions";
+import { useEffect, useState } from "react";
 import Permissions from "./Permissions";
-import { permissionsAPI, rolesAPI } from "../../../../../utils/api/users";
+import {
+    permissionsAPI,
+    rolesAPI,
+} from "../../../../../utils/api/models/users";
 import { useAuth } from "../../../../../context/AuthContext";
 
 const Cover = () => {

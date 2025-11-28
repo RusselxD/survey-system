@@ -2,7 +2,7 @@ import DashboardSkeleton from "./DashboardSkeleton";
 import MainMetrics from "./HeroMetrics.jsx";
 
 import { useState, useEffect } from "react";
-import { dashboardAPI } from "../../../utils/api/dashboard.js";
+import { dashboardAPI } from "../../../utils/api/pages/dashboard.js";
 import SupportingMetrics from "./SupportingMetrics.jsx";
 import SurveyComposition from "./SurveyComposition.jsx";
 
