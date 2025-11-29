@@ -11,4 +11,22 @@ export const analyticsAPI = {
 
     getTopSurveysByResponseCount: () =>
         apiClient.get("/Analytics/SurveysWithResponseCounts"),
+
+    getCompletionTimeDistribution: () =>
+        apiClient.get("/Analytics/CompletionTimeDistribution"),
+
+    getResponsesByLocation: (includeAll) =>
+        apiClient.get(`/Analytics/ResponsesByLocation/${includeAll}`),
+
+    getResponsesByServiceType: () =>
+        apiClient.get("/Analytics/ResponsesByServiceType"),
+
+    getResponseActivityData: (view) =>
+        apiClient.get(`/Analytics/ResponseActivity/${view}`),
+
+    getQuestionTypeDistribution: () =>
+        apiClient.get("/Analytics/QuestionTypeDistribution"),
+
+    getCompletionRateBySurveyLength: () =>
+        apiClient.get("/Analytics/CompletionRateBySurveyLength"),
 };

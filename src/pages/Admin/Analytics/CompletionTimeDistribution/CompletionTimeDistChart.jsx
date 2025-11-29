@@ -21,7 +21,7 @@ ChartJS.register(
 );
 
 const CompletionTimeDistChart = ({ dataset }) => {
-    const { timeRanges, responseCounts, peakRange } = dataset;
+    const { timeRanges, responseCounts, peakRanges } = dataset;
 
     // Initialize theme state based on system preference (dark mode detection)
     const [isDark, setIsDark] = useState(
@@ -109,7 +109,11 @@ const CompletionTimeDistChart = ({ dataset }) => {
                             return `Responses: ${context.parsed.y} (${percentage}%)`;
                         },
                         afterLabel: function (context) {
-                            if (timeRanges[context.dataIndex] === peakRange) {
+                            if (
+                                peakRanges.includes(
+                                    timeRanges[context.dataIndex]
+                                )
+                            ) {
                                 return "← Peak range";
                             }
                             return "";
@@ -165,19 +169,19 @@ const CompletionTimeDistChart = ({ dataset }) => {
                 },
             },
         }),
-        [textColor, gridColor, responseCounts, timeRanges, peakRange]
+        [textColor, gridColor, responseCounts, timeRanges, peakRanges]
     );
 
     // Generate bar colors - highlight the peak range
     const barColors = timeRanges.map(
         (range) =>
-            range === peakRange
+            peakRanges.includes(range)
                 ? "rgb(34, 197, 94)" // Green for peak
                 : "rgb(59, 130, 246)" // Blue for others
     );
 
     const barBorderColors = timeRanges.map((range) =>
-        range === peakRange ? "rgb(22, 163, 74)" : "rgb(37, 99, 235)"
+        peakRanges.includes(range) ? "rgb(22, 163, 74)" : "rgb(37, 99, 235)"
     );
 
     // Chart data structure for react-chartjs-2

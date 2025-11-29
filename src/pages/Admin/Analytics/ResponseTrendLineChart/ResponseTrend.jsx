@@ -11,7 +11,6 @@ import {
     Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { max } from "date-fns";
 
 // Register Chart.js components
 ChartJS.register(
@@ -26,7 +25,7 @@ ChartJS.register(
 );
 
 const ResponseTrend = ({ dataset, days }) => {
-    const { labels, responseCounts } = dataset;
+    const { labels, responseCounts, surveyTrends } = dataset;
 
     // Initialize theme state based on system preference (dark mode detection)
     const [isDark, setIsDark] = useState(
@@ -73,9 +72,25 @@ const ResponseTrend = ({ dataset, days }) => {
         ? "rgba(255, 255, 255, 0.1)"
         : "rgba(0, 0, 0, 0.1)";
 
-    const largestValue = Math.max(...responseCounts);
-    // console.log(largestValue)
-    console.log(largestValue === 0 ? 10 : Math.ceil(largestValue * 1.2))
+    // Generate colors dynamically based on number of surveys
+    const generateColors = (count) => {
+        const colors = [];
+        for (let i = 0; i < count; i++) {
+            const hue = (i * 360) / count; // Distribute evenly across color wheel
+            colors.push({
+                border: `hsl(${hue}, 70%, 50%)`,
+                background: `hsla(${hue}, 70%, 50%, 0.1)`,
+            });
+        }
+        return colors;
+    };
+
+    const surveyColors = generateColors(surveyTrends.length);
+
+    const largestValue = Math.max(
+        ...responseCounts,
+        ...surveyTrends.flatMap((s) => s.responseCounts)
+    );
 
     // Chart.js configuration options (memoized to avoid recreating on every render)
     const options = useMemo(
@@ -190,8 +205,9 @@ const ResponseTrend = ({ dataset, days }) => {
     const data = {
         labels,
         datasets: [
+            // Overall responses (main line)
             {
-                label: "Responses",
+                label: "Total Responses",
                 data: responseCounts,
                 borderColor: "rgb(59, 130, 246)",
                 backgroundColor: "rgba(59, 130, 246, 0.1)",
@@ -202,6 +218,21 @@ const ResponseTrend = ({ dataset, days }) => {
                 pointBorderColor: "white",
                 pointBorderWidth: 2,
             },
+            // Individual survey lines
+            ...surveyTrends.map((survey, index) => ({
+                label: survey.surveyName,
+                data: survey.responseCounts,
+                borderColor: surveyColors[index].border,
+                backgroundColor: surveyColors[index].background,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4,
+                pointBackgroundColor: surveyColors[index].border,
+                pointBorderColor: "white",
+                pointBorderWidth: 1,
+                pointRadius: 3,
+                hoverRadius: 5,
+            })),
         ],
     };
 

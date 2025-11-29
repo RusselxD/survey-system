@@ -58,10 +58,10 @@ const SurveyComposition = ({ data }) => {
                             />
                         </div>
                         <div>
-                            <div className="text-2xl my-1 font-semibold text-white dark:text-white">
+                            <div className="text-2xl my-1 font-semibold dark:text-white text-black">
                                 {item.data}
                             </div>
-                            <div className="text-xs text-gray-400 dark:text-gray-300">
+                            <div className="text-xs text-gray-500 dark:text-gray-300">
                                 {item.title}
                             </div>
                             {/* <div className="text-xs custom-primary-txt">

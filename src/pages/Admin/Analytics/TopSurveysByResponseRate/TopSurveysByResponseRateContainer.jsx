@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TopSurveysByResponse from "./TopSurveysByResponse";
 import { analyticsAPI } from "../../../../utils/api/pages/analytics";
 import { useAuth } from "../../../../context/AuthContext";
@@ -25,6 +25,8 @@ const TopSurveysByResponseRateContainer = () => {
         };
         fetchData();
     }, [refetch]);
+
+    console.log(topSurveyByResponsesData);
 
     if (isFetching) {
         return <div className="skeleton w-[60%]"></div>;

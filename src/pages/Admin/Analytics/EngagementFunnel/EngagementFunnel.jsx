@@ -5,12 +5,16 @@ import { useAuth } from "../../../../context/AuthContext";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
 
 const ProgressBar = ({ label, value, rate }) => {
-    // Map color names to actual hex values
-    const colorMap = {
-        "Survey Started": "#60a5fa",
-        "Survey Completed": "#4ade80",
-        "Survey Views": "#fbbf24",
+    // Function to get color based on percentage
+    const getColorByPercentage = (percentage) => {
+        if (percentage >= 75) return "#4ade80"; // green
+        if (percentage >= 50) return "#60a5fa"; // blue
+        if (percentage >= 25) return "#fbbf24"; // yellow
+        return "#f87171"; // red
     };
+
+    // Determine the color: use label-specific color if available, otherwise use percentage-based color
+    const barColor = getColorByPercentage(rate || 100);
 
     return (
         <div className="">
@@ -28,7 +32,7 @@ const ProgressBar = ({ label, value, rate }) => {
                     className="absolute left-0 top-0 bottom-0"
                     style={{
                         width: `${rate || 100}%`,
-                        backgroundColor: colorMap[label] || "#60a5fa", // fallback to blue
+                        backgroundColor: barColor,
                     }}
                 ></div>
             </div>
