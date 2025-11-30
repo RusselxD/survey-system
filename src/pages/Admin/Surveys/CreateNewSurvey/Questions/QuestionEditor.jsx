@@ -11,7 +11,6 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
             paragraph: { placeholder: "" },
             multiple_choice: {
                 options: [{ id: Date.now(), text: "Option 1" }],
-                otherOption: false,
                 shuffleOptions: false,
             },
             checkboxes: {
@@ -21,7 +20,6 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
             dropdown: {
                 options: [{ id: Date.now(), text: "Option 1" }],
                 shuffleOptions: false,
-                otherOption: false,
             },
             linear_scale: {
                 min: 1,
@@ -47,10 +45,13 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
         return defaults[type] || {};
     };
 
-    const metadata =
-        Object.keys(question.metadata || {}).length > 0
-            ? question.metadata
-            : getDefaultMetadata(typeName);
+    // Get defaults for the question type
+    const defaultMetadata = getDefaultMetadata(typeName);
+    // Merge defaults with existing metadata, ensuring all required properties exist
+    const metadata = {
+        ...defaultMetadata,
+        ...(question.metadata || {}),
+    };
 
     const updateMetadata = (newMetadata) => {
         onUpdate({ ...question, metadata: newMetadata });
@@ -199,23 +200,6 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                             </button>
                         </div>
                         <div className="flex gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
-                            {(typeName === "multiple_choice" ||
-                                typeName === "dropdown") && (
-                                <label className="flex dark:text-white items-center gap-2 text-xs cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={metadata.otherOption}
-                                        onChange={(e) =>
-                                            updateMetadata({
-                                                ...metadata,
-                                                otherOption: e.target.checked,
-                                            })
-                                        }
-                                        className="w-4 h-4"
-                                    />
-                                    <span>Add "Other"</span>
-                                </label>
-                            )}
                             <label className="flex dark:text-white items-center gap-2 text-xs cursor-pointer">
                                 <input
                                     type="checkbox"
@@ -235,6 +219,13 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                 );
 
             case "linear_scale":
+                // Ensure we have valid default values
+                const min = metadata.min ?? 1;
+                const max = metadata.max ?? 5;
+                const step = metadata.step ?? 1;
+                const minLabel = metadata.minLabel ?? "";
+                const maxLabel = metadata.maxLabel ?? "";
+
                 return (
                     <div className="space-y-3 dark:text-white">
                         <div className="grid grid-cols-2 gap-3">
@@ -242,11 +233,11 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                                 <span className="w-16">Min:</span>
                                 <input
                                     type="number"
-                                    value={metadata.min}
+                                    value={min}
                                     onChange={(e) =>
                                         updateMetadata({
                                             ...metadata,
-                                            min: Number(e.target.value),
+                                            min: Number(e.target.value) || 1,
                                         })
                                     }
                                     className="flex-1 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs"
@@ -256,11 +247,11 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                                 <span className="w-16">Max:</span>
                                 <input
                                     type="number"
-                                    value={metadata.max}
+                                    value={max}
                                     onChange={(e) =>
                                         updateMetadata({
                                             ...metadata,
-                                            max: Number(e.target.value),
+                                            max: Number(e.target.value) || 5,
                                         })
                                     }
                                     className="flex-1 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs"
@@ -270,11 +261,11 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                                 <span className="w-16">Step:</span>
                                 <input
                                     type="number"
-                                    value={metadata.step}
+                                    value={step}
                                     onChange={(e) =>
                                         updateMetadata({
                                             ...metadata,
-                                            step: Number(e.target.value),
+                                            step: Number(e.target.value) || 1,
                                         })
                                     }
                                     className="flex-1 px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-xs"
@@ -285,7 +276,7 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                                 <span className="w-16">Min label:</span>
                                 <input
                                     type="text"
-                                    value={metadata.minLabel}
+                                    value={minLabel}
                                     onChange={(e) =>
                                         updateMetadata({
                                             ...metadata,
@@ -299,7 +290,7 @@ const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
                                 <span className="w-16">Max label:</span>
                                 <input
                                     type="text"
-                                    value={metadata.maxLabel}
+                                    value={maxLabel}
                                     onChange={(e) =>
                                         updateMetadata({
                                             ...metadata,

@@ -25,8 +25,7 @@ import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import NotFound from "./components/NotFound.jsx";
 import ForceUpdatePassword from "./pages/Admin/Login/ForceUpdatePassword.jsx";
 import CreateNewSurvey from "./pages/Admin/Surveys/CreateNewSurvey/CreateNewSurvey.jsx";
-import SurveyArchived from "./components/reusable/SurveyArchived.jsx";
-import TakeSurvey from "./pages/User/Survey/TakeSurvey.jsx";
+import TakeSurvey from "./pages/User/Survey/TakeSurvey/TakeSurvey.jsx";
 import SurveyView from "./pages/User/Survey/SurveyView/SurveyView.jsx";
 
 const router = createBrowserRouter([
@@ -80,10 +79,6 @@ const router = createBrowserRouter([
     {
         path: "/s/:id/take",
         element: <TakeSurvey />,
-    },
-    {
-        path: "/survey/archived",
-        element: <SurveyArchived />,
     },
     {
         path: "/not-found",

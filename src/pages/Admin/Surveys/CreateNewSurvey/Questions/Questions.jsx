@@ -60,7 +60,6 @@ const DEFAULT_METADATA = {
 };
 
 const Questions = ({ questionTypes, questions, setQuestions }) => {
-    
     const [focusedQuestionId, setFocusedQuestionId] = useState(null);
 
     const handleDeleteQuestion = (id) => {

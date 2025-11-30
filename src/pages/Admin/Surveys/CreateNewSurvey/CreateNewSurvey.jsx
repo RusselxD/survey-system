@@ -195,6 +195,8 @@ const CreateNewSurvey = () => {
 
             surveyPayload.surveyQuestions = formattedQuestions;
 
+            console.log(surveyPayload)
+
             if (isEdit) {
                 await surveyAPI.updateSurvey(id, surveyPayload);
             } else {
@@ -208,6 +210,7 @@ const CreateNewSurvey = () => {
             );
             navigate("/admin/surveys");
         } catch (error) {
+            console.log(error)
             toastError(
                 error.message ||
                     error.response?.data ||

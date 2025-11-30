@@ -39,8 +39,6 @@ const ResponseAndQuestionsCount = ({ responsesCount, questionsCount }) => {
 
 const SurveyCard = ({ survey }) => {
 
-    console.log(survey)
-
     const navigate = useNavigate();
 
     const [qrModalIsOpen, setQrModalIsOpen] = useState(false);

@@ -3,6 +3,8 @@ import { ListChecks, ArrowRight } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { respondentsAPI } from "../../../../utils/api/respondents";
 import FailedToLoad from "../../../../components/reusable/FailedToLoad";
+import SurveyViewSkeleton from "./SurveyViewSkeleton";
+import SurveyArchivedMessage from "../../../../components/reusable/SurveyArchivedMessage";
 
 const SurveyView = () => {
     const { id } = useParams();
@@ -11,6 +13,7 @@ const SurveyView = () => {
     const [survey, setSurvey] = useState(null);
 
     const navigate = useNavigate();
+    const [isArchived, setIsArchived] = useState(false);
 
     useEffect(() => {
         const fetchSurveyData = async () => {
@@ -19,23 +22,12 @@ const SurveyView = () => {
                 const res = await respondentsAPI.getSurveyPreviewDetails(id);
 
                 if (res.data.status === "archived") {
-                    navigate("/survey/archived", {
-                        state: {
-                            title: res.data?.title || "Archived Survey",
-                            coverImageUrl: res.data?.coverImageUrl,
-                        },
-                    });
+                    setIsArchived(true);
+                } else {
+                    await respondentsAPI.recordSurveyView(res.data.id);
                 }
 
                 setSurvey(res.data);
-
-                if (res.data.status !== "archived") {
-                    try {
-                        await respondentsAPI.recordSurveyView(res.data.id);
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }
             } catch (error) {
                 console.log("Logging Error");
                 console.log(error);
@@ -50,32 +42,8 @@ const SurveyView = () => {
         fetchSurveyData();
     }, [id]);
 
-    // Record survey view
-    // useEffect(() => {
-    //     if (survey && survey.status !== "archived") {
-    //         try {
-    //             respondentsAPI.recordSurveyView(survey.id);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-    // }, [survey]);
-
     if (isFetching) {
-        return (
-            <div className="min-h-screen dark:bg-base-100 bg-gray-100/70 p-2 sm:p-5 flex justify-center">
-                <div className="w-full md:w-[60%] lg:w-[50%] gap-3 sm:gap-4 flex flex-col items-start ">
-                    <div className="skeleton w-full h-20 md:h-24 lg:h-32"></div>
-                    <div className="skeleton h-10 sm:h-12 w-[80%]"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                    <div className="skeleton h-5 sm:h-7 w-full"></div>
-                </div>
-            </div>
-        );
+        return <SurveyViewSkeleton />;
     }
 
     if (!survey) {
@@ -87,10 +55,10 @@ const SurveyView = () => {
     }
 
     return (
-        <div className="min-h-screen dark:bg-base-100 bg-gray-100/70 p-2 sm:p-5 md:flex md:justify-center">
-            <div className="md:w-[80%] lg:w-[60%] xl:w-[50%]">
+        <div className="min-h-screen dark:bg-base-100 bg-gray-100/70 p-2 sm:p-5 flex items-center md:items-start md:justify-center">
+            <div className="md:w-[80%] lg:w-[60%] xl:w-[50%] ">
                 {/* Survey Card */}
-                <div className="dark:bg-base-300 bg-white rounded-xl shadow-xl overflow-hidden">
+                <div className="dark:bg-base-300 bg-white rounded-xl overflow-hidden">
                     {/* Image Section (conditional) */}
                     {survey.coverImageUrl && (
                         <div className="relative h-32 md:h-40 overflow-hidden">
@@ -109,65 +77,76 @@ const SurveyView = () => {
                             {survey.title}
                         </h1>
 
-                        {survey.description && (
-                            <p className="custom-sec-txt text-xs md:text-sm mb-3 leading-6 md:leading-8">
-                                {survey.description}
-                            </p>
-                        )}
-
-                        <div className="flex items-center text-xs md:text-sm gap-2 mb-3 md:mb-4 custom-sec-txt">
-                            <ListChecks className="w-5 h-5 md:w-6 md:h-6" />
-                            <span>{survey.questionCount} Questions</span>
-                        </div>
-
-                        {/* Note Box */}
-                        <div className="dark:bg-gray-700 bg-gray-100 rounded-lg p-3 md:p-4 mb-3 md:mb-4">
-                            <p className="text-sm md:text-base font-medium custom-sec-txt mb-2">
-                                Note:
-                            </p>
-                            <ul className="text-xs md:text-sm custom-sec-txt space-y-1 md:space-y-2 list-disc pl-5 pr-2">
-                                <li>Your responses are confidential</li>
-                                {(survey.askName || survey.askEmail) && (
-                                    <li className="leading-5 md:leading-7">
-                                        Personal information you chose to
-                                        provide will be securely stored and used
-                                        solely for survey administration
-                                        purposes in accordance with{" "}
-                                        <a
-                                            href="https://privacy.gov.ph/data-privacy-act/"
-                                            target="_blank"
-                                            className="text-blue-500 hover:underline"
-                                        >
-                                            data privacy regulations
-                                        </a>
-                                    </li>
+                        {isArchived ? (
+                            <SurveyArchivedMessage />
+                        ) : (
+                            <>
+                                {survey.description && (
+                                    <p className="custom-sec-txt text-xs md:text-sm mb-3 leading-6 md:leading-8">
+                                        {survey.description}
+                                    </p>
                                 )}
-                                <li>
-                                    All data are encrypted and securely stored
-                                </li>
-                                <li>
-                                    You can complete this survey at your own
-                                    pace
-                                </li>
-                            </ul>
-                        </div>
 
-                        {/* Action Button */}
-                        <div className="flex justify-end">
-                            <Link
-                                to={`/s/${survey.id}/take`}
-                                className="mb-3 w-full md:w-fit gap-2 justify-center custom-primary-btn py-2 lg:py-3 md:px-6 text-xs lg:text-sm rounded-md transition-all duration-200 transform shadow-lg hover:shadow-xl"
-                            >
-                                <span>Take Survey</span>
-                                <ArrowRight className="h-5 w-5" />
-                            </Link>
-                        </div>
+                                <div className="flex items-center text-xs md:text-sm gap-2 mb-3 md:mb-4 custom-sec-txt">
+                                    <ListChecks className="w-5 h-5 md:w-6 md:h-6" />
+                                    <span>
+                                        {survey.questionCount} Questions
+                                    </span>
+                                </div>
 
-                        {/* Footer Text */}
-                        <p className="text-center w-[80%] mx-auto text-[0.60rem] sm:mb-3 sm:text-xs text-gray-500 ">
-                            By taking this survey, you agree to our data
-                            collection terms
-                        </p>
+                                {/* Note Box */}
+                                <div className="dark:bg-gray-700 bg-gray-100 rounded-lg p-3 md:p-4 mb-3 md:mb-4">
+                                    <p className="text-sm md:text-base font-medium custom-sec-txt mb-2">
+                                        Note:
+                                    </p>
+                                    <ul className="text-xs md:text-sm custom-sec-txt space-y-1 md:space-y-2 list-disc pl-5 pr-2">
+                                        <li>Your responses are confidential</li>
+                                        {(survey.askName ||
+                                            survey.askEmail) && (
+                                            <li className="leading-5 md:leading-7">
+                                                Personal information you chose
+                                                to provide will be securely
+                                                stored and used solely for
+                                                survey administration purposes
+                                                in accordance with{" "}
+                                                <a
+                                                    href="https://privacy.gov.ph/data-privacy-act/"
+                                                    target="_blank"
+                                                    className="text-blue-500 hover:underline"
+                                                >
+                                                    data privacy regulations
+                                                </a>
+                                            </li>
+                                        )}
+                                        <li>
+                                            All data are encrypted and securely
+                                            stored
+                                        </li>
+                                        <li>
+                                            You can complete this survey at your
+                                            own pace
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {/* Action Button */}
+                                <div className="flex justify-end">
+                                    <Link
+                                        to={`/s/${survey.id}/take`}
+                                        className="mb-3 w-full md:w-fit gap-2 justify-center custom-primary-btn py-2 lg:py-3 md:px-6 text-xs lg:text-sm rounded-md transition-all duration-200 transform shadow-lg hover:shadow-xl"
+                                    >
+                                        <span>Take Survey</span>
+                                        <ArrowRight className="h-5 w-5" />
+                                    </Link>
+                                </div>
+
+                                {/* Footer Text */}
+                                <p className="text-center w-[80%] mx-auto text-[0.60rem] sm:mb-3 sm:text-xs text-gray-500 ">
+                                    By taking this survey, you agree to our data
+                                    collection terms
+                                </p>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
