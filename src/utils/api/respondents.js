@@ -1,0 +1,31 @@
+import apiClient from "./axiosConfig";
+
+// Helper to get or create session ID
+const getSessionId = (surveyId) => {
+    const storageKey = `survey_view_session_${surveyId}`;
+    let sessionId = sessionStorage.getItem(storageKey);
+    if (!sessionId) {
+        sessionId = crypto.randomUUID();
+        sessionStorage.setItem(storageKey, sessionId);
+    }
+    return sessionId;
+};
+
+export const respondentsAPI = {
+    getSurveyPreviewDetails: (surveyId) =>
+        apiClient.get(`TakeSurvey/Preview/${surveyId}`),
+
+    getSurveyQuestions: (surveyId) =>
+        apiClient.get(`TakeSurvey/DetailsAndQuestions/${surveyId}`),
+
+    recordSurveyView: (surveyId) =>
+        apiClient.post(`TakeSurvey/View/${surveyId}`, {
+            sessionId: getSessionId(surveyId),
+        }),
+
+    // Helper to check if a survey has been viewed
+    hasSurveyBeenViewed: (surveyId) => {
+        const storageKey = `survey_view_session_${surveyId}`;
+        return sessionStorage.getItem(storageKey) !== null;
+    },
+};
