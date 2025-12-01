@@ -7,11 +7,14 @@ import { generateQRCodeFile } from "../../../../../utils/qrcode";
 import { uploadAPI } from "../../../../../utils/api/upload";
 import { useAuth } from "../../../../../context/AuthContext";
 import { surveyAPI } from "../../../../../utils/api/models/survey";
+import FailedToLoad from "../../../../../components/reusable/FailedToLoad";
+import { useNavigate } from "react-router-dom";
 
 const appUrl = import.meta.env.VITE_APP_URL;
 
 const SurveyMainDetails = ({ id }) => {
-    const { toastError } = useAuth();
+    const { toastError, toastSuccess } = useAuth();
+    const navigate = useNavigate();
 
     const [surveyMainDetails, setSurveyMainDetails] = useState(null);
     const [isFetching, setIsFetching] = useState(false);
@@ -42,6 +45,7 @@ const SurveyMainDetails = ({ id }) => {
                 qrCodeUrl: qrCodeUrl,
             }));
 
+            toastSuccess("QR code generated successfully.");
         } catch (error) {
             console.log(error);
             toastError("Failed to generate QR code. Please try again.");
@@ -59,6 +63,10 @@ const SurveyMainDetails = ({ id }) => {
                 const res = await surveyPageAPI.getSurveyMainDetails(id);
                 setSurveyMainDetails(res.data);
             } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    navigate("/not-found");
+                    return;
+                }
                 console.log(error);
             } finally {
                 setIsFetching(false);
@@ -72,7 +80,7 @@ const SurveyMainDetails = ({ id }) => {
     }
 
     if (!surveyMainDetails) {
-        return null;
+        return <FailedToLoad />;
     }
 
     return (

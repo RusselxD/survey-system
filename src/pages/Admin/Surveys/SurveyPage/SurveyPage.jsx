@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import SurveyMainDetails from "./SurveyMainDetails/SurveyMainDetails";
 import { ArrowLeft } from "lucide-react";
+import QuestionsAndResponses from "./QuestionsAndResponses/QuestionsAndResponses";
 
 const SurveyPage = () => {
     const { id } = useParams();
@@ -12,6 +13,7 @@ const SurveyPage = () => {
                 <span >Back to Surveys</span>
             </Link>
             <SurveyMainDetails id={id} />
+            <QuestionsAndResponses id={id} />
         </div>
     );
 };

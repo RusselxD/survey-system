@@ -3,13 +3,10 @@ import {
     Briefcase,
     CheckCircle,
     Clock,
-    Icon,
     MapPin,
     TrendingUp,
-    User,
     Users,
 } from "lucide-react";
-import React from "react";
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -26,9 +23,11 @@ const SurveyDetailsCard = ({ survey }) => {
             <h1 className="custom-primary-txt font-bold text-xl">
                 {survey.title}
             </h1>
-            <p className="custom-sec-txt my-2 leading-8">
-                {survey.description}
-            </p>
+            {survey.description && (
+                <p className="custom-sec-txt my-2 leading-8">
+                    {survey.description}
+                </p>
+            )}
             <div className="flex gap-5 text-sm">
                 <p className="space-x-2">
                     <span className="text-gray-600 dark:text-gray-400">
@@ -92,6 +91,12 @@ const MetricsContainer = ({ metrics }) => {
                 icon={<CheckCircle className="text-green-400" />}
             />
             <MetricsCard
+                title="Avg. Duration"
+                value={metrics.avgCompletionTimeInMinutes + " mins"}
+                desc="Time to Complete"
+                icon={<Clock className="text-cyan-400" />}
+            />
+            <MetricsCard
                 title="Response Rate"
                 value={metrics.responseRate + "%"}
                 desc="Views -> Responses"
@@ -102,12 +107,6 @@ const MetricsContainer = ({ metrics }) => {
                 value={metrics.completionRate + "%"}
                 desc="Started -> Completed"
                 icon={<BarChart3 className="text-emerald-400" />}
-            />
-            <MetricsCard
-                title="Avg. Duration"
-                value={metrics.avgCompletionTimeInMinutes + " mins"}
-                desc="Time to Complete"
-                icon={<Clock className="text-cyan-400" />}
             />
         </div>
     );
