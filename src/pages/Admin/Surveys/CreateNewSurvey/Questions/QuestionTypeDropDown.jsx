@@ -1,3 +1,9 @@
+const formatName = (name) => {
+    let res = ''
+    name.split("_").forEach(word => res += word.charAt(0).toUpperCase() + word.slice(1) + " ")
+    return res.trim();
+}
+
 const QuestionTypeDropDown = ({
     question,
     questionTypes,
@@ -15,7 +21,7 @@ const QuestionTypeDropDown = ({
             {questionTypes.map((qt, i) => {
                 return (
                     <option value={qt.id} key={i}>
-                        {qt.name}
+                        {formatName(qt.name)}
                     </option>
                 );
             })}

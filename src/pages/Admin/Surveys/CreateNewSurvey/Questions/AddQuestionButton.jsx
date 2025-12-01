@@ -15,7 +15,7 @@ const AddQuestionButton = ({ setQuestions }) => {
                     },
                 ]);
             }}
-            className="flex text-xs gap-2 transition-colors items-center justify-center px-3 py-2 rounded-md bg-blue-700 text-white hover:bg-blue-800"
+            className="flex text-sm mt-3 gap-2 transition-colors items-center justify-center px-3 py-2 rounded-md bg-blue-700 text-white hover:bg-blue-800"
         >
             <Plus size={20} />
             <span>Add Question</span>

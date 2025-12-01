@@ -150,10 +150,7 @@ const Questions = ({ questionTypes, questions, setQuestions }) => {
 
     return (
         <div className="custom-container p-3 sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
-            <div className="flex items-start justify-between mb-3">
-                <h1 className="custom-primary-txt font-semibold">Questions</h1>
-                <AddQuestionButton setQuestions={setQuestions} />
-            </div>
+            <h1 className="custom-primary-txt font-semibold mb-3">Questions</h1>
 
             <div className="space-y-4">
                 {questions.map((question, index) => {
@@ -270,6 +267,8 @@ const Questions = ({ questionTypes, questions, setQuestions }) => {
                     );
                 })}
             </div>
+
+            <AddQuestionButton setQuestions={setQuestions} />
         </div>
     );
 };

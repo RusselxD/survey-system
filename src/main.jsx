@@ -58,7 +58,7 @@ const router = createBrowserRouter([
             { path: "dashboard", element: <Dashboard /> },
             { path: "analytics", element: <Analytics /> },
             { path: "surveys", element: <Surveys /> },
-            { path: "surveys/:uuid", element: <SurveyPage /> },
+            { path: "surveys/:id/view-details", element: <SurveyPage /> },
             { path: "surveys/new", element: <CreateNewSurvey /> },
             { path: "surveys/:id/edit", element: <CreateNewSurvey /> },
             {

@@ -42,10 +42,10 @@ const Head = () => {
             {hasPermission("survey.create") && (
                 <NavLink
                     to={"/admin/surveys/new"}
-                    className="custom-primary-btn p-3 gap-1 text-xs    "
+                    className="custom-primary-btn p-3 gap-1 text-sm    "
                 >
                     <Plus size={18} />
-                    <span>Create New Survey</span>
+                    <span>New Survey</span>
                 </NavLink>
             )}
         </div>

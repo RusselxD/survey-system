@@ -3,7 +3,7 @@ import { useState } from "react";
 import QRCodeModal from "../Modals/QRCodeModal/QRCodeModal";
 import PreviewSurveyModal from "../Modals/PreviewSurveyModal/PreviewSurveyModal";
 import { formatDistanceToNow } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const getStatusBadge = (status) => {
     const statusLower = status.toLowerCase();
@@ -31,14 +31,16 @@ const ResponseAndQuestionsCount = ({ responsesCount, questionsCount }) => {
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ">
                 <FileText size={14} className="sm:w-4 sm:h-4" />
-                <p>{questionsCount} {questionsCount === 1 ? "question" : "questions"}</p>
+                <p>
+                    {questionsCount}{" "}
+                    {questionsCount === 1 ? "question" : "questions"}
+                </p>
             </div>
         </div>
     );
 };
 
 const SurveyCard = ({ survey }) => {
-
     const navigate = useNavigate();
 
     const [qrModalIsOpen, setQrModalIsOpen] = useState(false);
@@ -73,7 +75,11 @@ const SurveyCard = ({ survey }) => {
                 </h2>
 
                 <div className="flex flex-col justify-between flex-1 ">
-                    <p className={`text-xs sm:text-sm leading-5 sm:leading-6 custom-sec-txt line-clamp-3 break-words ${survey.description ? "" : "italic"}`}>
+                    <p
+                        className={`text-xs sm:text-sm leading-5 sm:leading-6 custom-sec-txt line-clamp-3 break-words ${
+                            survey.description ? "" : "italic"
+                        }`}
+                    >
                         {survey.description || "No description provided yet."}
                     </p>
 
@@ -116,9 +122,14 @@ const SurveyCard = ({ survey }) => {
 
                             {survey.status === "draft" && (
                                 <>
-                                    <button onClick={() => {
-                                        navigate(`/admin/surveys/${survey.id}/edit`);
-                                    }} className="bg-green-600 hover:bg-green-700 border border-green-700 text-white px-3 sm:px-4 py-1.5 sm:py-2.5 text-xs rounded-md transition-all active:scale-95 inline-flex items-center">
+                                    <button
+                                        onClick={() => {
+                                            navigate(
+                                                `/admin/surveys/${survey.id}/edit`
+                                            );
+                                        }}
+                                        className="bg-green-600 hover:bg-green-700 border border-green-700 text-white px-3 sm:px-4 py-1.5 sm:py-2.5 text-xs rounded-md transition-all active:scale-95 inline-flex items-center"
+                                    >
                                         Continue Editing
                                     </button>
                                     <button
@@ -136,16 +147,12 @@ const SurveyCard = ({ survey }) => {
                             )}
 
                             {survey.status !== "draft" && (
-                                <button
-                                    onClick={() => {
-                                        navigate(
-                                            `/admin/surveys/${survey.uuid}`
-                                        );
-                                    }}
+                                <Link
+                                    to={`/admin/surveys/${survey.id}/view-details`}
                                     className="custom-primary-btn px-4 py-2 lg:py-3 text-xs"
                                 >
                                     View Details
-                                </button>
+                                </Link>
                             )}
                         </div>
                     </div>

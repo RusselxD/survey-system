@@ -1,11 +1,11 @@
 import TextInput from "../../../../components/TextInput";
 import { Globe, Save, Upload, X } from "lucide-react";
 
-const Header = ({ handleSaveDraft, handlePublishSurvey, isSubmitting }) => {
+const Header = ({ handleSaveDraft, handlePublishSurvey, isSubmitting, isEdit }) => {
     return (
         <div className="flex items-start justify-between ">
             <h1 className="custom-primary-txt font-semibold">
-                Create New Survey
+                {isEdit ? "Edit Survey" : "Create New Survey"}
             </h1>
             <div className="flex items-center gap-3 text-xs">
                 <button
@@ -58,6 +58,7 @@ const DropDown = ({ label, options, value, setValue }) => {
 };
 
 const SurveyDetails = ({
+    isEdit,
     title,
     description,
     setTitle,
@@ -95,6 +96,7 @@ const SurveyDetails = ({
                 handleSaveDraft={handleSaveDraft}
                 handlePublishSurvey={handlePublishSurvey}
                 isSubmitting={isSubmitting}
+                isEdit={isEdit}
             />
             <TextInput val={title} setVal={setTitle} label={"Survey Title"} />
             <fieldset className="fieldset my-3">

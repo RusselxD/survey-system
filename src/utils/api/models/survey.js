@@ -59,6 +59,9 @@ export const surveyAPI = {
 
     updateSurvey: (id, surveyData) =>
         apiClient.put(`/Surveys/${id}`, surveyData),
+
+    saveQrCodeUrl: (id, qrCodeUrl) =>
+        apiClient.put(`/Surveys/${id}/qr-code`, { qrCodeUrl }),
 };
 
 export const locationsAPI = {

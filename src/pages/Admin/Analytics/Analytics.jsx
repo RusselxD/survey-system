@@ -11,7 +11,7 @@ import QuestionTypeDistributionContainer from "./QuestionTypeDistribution/Questi
 import CompletionRateBySurveyLengthContainer from "./CompletionRateBySurveyLength/CompletionRateBySurveyLengthContainer";
 
 const Analytics = () => {
-    const [days, setDays] = useState(15);
+    const [days, setDays] = useState(20);
 
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 flex flex-col gap-3">

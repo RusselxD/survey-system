@@ -269,6 +269,7 @@ const CreateNewSurvey = () => {
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 gap-3 flex flex-col">
             <SurveyDetails
+                isEdit={isEdit}
                 title={title}
                 setTitle={setTitle}
                 description={description}
