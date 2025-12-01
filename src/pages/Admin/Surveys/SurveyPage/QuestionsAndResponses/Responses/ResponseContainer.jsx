@@ -17,7 +17,7 @@ const timeFormatter = (time) => {
 
 const ResponseContainer = ({ response, responseNumber }) => {
     return (
-        <div className="dark:bg-base-300 py-4 px-6 rounded-md space-y-2 bg-white border dark:border-slate-700 border-gray-300">
+        <div className="dark:bg-base-300 py-5 px-6 rounded-md space-y-3 bg-white border dark:border-slate-700 border-gray-300">
             <div className="flex items-center gap-3">
                 <h1 className="custom-primary-txt font-medium">
                     Response {responseNumber}

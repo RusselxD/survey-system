@@ -24,7 +24,7 @@ const Responses = ({ id }) => {
     }, [id]);
 
     if (isFetching) {
-        return <div>L</div>;
+        return <div></div>;
     }
 
     console.log(responses);
