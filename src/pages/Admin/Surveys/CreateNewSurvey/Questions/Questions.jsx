@@ -5,60 +5,6 @@ import AddQuestionButton from "./AddQuestionButton";
 import IsRequiredCheckbox from "./IsRequiredCheckbox";
 import QuestionEditor from "./QuestionEditor";
 
-const DEFAULT_METADATA = {
-    short_answer: {
-        placeholder: "",
-        validation: null, // { kind: "text"|"number"|"regex"|"length", params: {...} }
-    },
-
-    paragraph: {
-        placeholder: "",
-        validation: null,
-    },
-
-    multiple_choice: {
-        options: [], // [{ id: "<id>", text: ""}]
-        otherOption: false,
-        shuffleOptions: false,
-    },
-
-    checkboxes: {
-        options: [],
-        shuffleOptions: false,
-    },
-
-    dropdown: {
-        options: [],
-        shuffleOptions: false,
-        otherOption: false,
-    },
-
-    linear_scale: {
-        min: 1,
-        max: 5,
-        step: 1,
-        minLabel: "",
-        maxLabel: "",
-    },
-
-    multiple_choice_grid: {
-        rows: [], // [{ id: "<id>", text: "" }]
-        columns: [], // [{ id: "<id>", text: "" }]
-        requireOnePerRow: false,
-        shuffleRows: false,
-    },
-
-    checkbox_grid: {
-        rows: [],
-        columns: [],
-        shuffleRows: false,
-    },
-
-    date: {},
-
-    time: {},
-};
-
 const Questions = ({ questionTypes, questions, setQuestions }) => {
     const [focusedQuestionId, setFocusedQuestionId] = useState(null);
 

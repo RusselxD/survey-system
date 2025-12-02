@@ -61,7 +61,7 @@ const SurveyView = () => {
                 <div className="dark:bg-base-300 bg-white rounded-xl overflow-hidden">
                     {/* Image Section (conditional) */}
                     {survey.coverImageUrl && (
-                        <div className="relative h-32 md:h-40 overflow-hidden">
+                        <div className="relative h-40 sm:h-48 overflow-hidden">
                             <img
                                 src={survey.coverImageUrl}
                                 alt="Survey cover"

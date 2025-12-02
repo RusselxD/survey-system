@@ -30,7 +30,7 @@ const Responses = ({ id }) => {
     console.log(responses);
 
     return (
-        <div className=" grid grid-cols-2 gap-4">
+        <div className=" grid gap-4">
             {responses.map((response, i) => {
                 return (
                     <ResponseContainer
