@@ -75,7 +75,6 @@ const MetricsCard = ({ title, value, desc, icon }) => {
 };
 
 const MetricsContainer = ({ metrics }) => {
-    console.log(metrics);
     return (
         <div className="mt-3 grid grid-cols-3 gap-3">
             <MetricsCard
