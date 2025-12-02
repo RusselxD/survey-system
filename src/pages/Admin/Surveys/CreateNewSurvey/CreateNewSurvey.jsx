@@ -9,8 +9,9 @@ import {
 import { useAuth } from "../../../../context/AuthContext";
 import Questions from "./Questions/Questions";
 import { uploadAPI } from "../../../../utils/api/upload";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import FailedToLoad from "../../../../components/reusable/FailedToLoad";
+import { ArrowLeft } from "lucide-react";
 
 const CreateNewSurvey = () => {
     const { toastError, toastSuccess, user } = useAuth();
@@ -195,7 +196,7 @@ const CreateNewSurvey = () => {
 
             surveyPayload.surveyQuestions = formattedQuestions;
 
-            console.log(surveyPayload)
+            console.log(surveyPayload);
 
             if (isEdit) {
                 await surveyAPI.updateSurvey(id, surveyPayload);
@@ -210,7 +211,7 @@ const CreateNewSurvey = () => {
             );
             navigate("/admin/surveys");
         } catch (error) {
-            console.log(error)
+            console.log(error);
             toastError(
                 error.message ||
                     error.response?.data ||
@@ -268,6 +269,13 @@ const CreateNewSurvey = () => {
 
     return (
         <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 gap-3 flex flex-col">
+            <Link
+                to="/admin/surveys"
+                className="flex items-center gap-2 w-fit pr-3 py-2 rounded-md text-sm custom-sec-txt hover:custom-primary-txt transition-colors"
+            >
+                <ArrowLeft size={20}/>
+                <span>Back to Surveys</span>
+            </Link>
             <SurveyDetails
                 isEdit={isEdit}
                 title={title}

@@ -132,17 +132,6 @@ const SurveyCard = ({ survey }) => {
                                     >
                                         Continue Editing
                                     </button>
-                                    <button
-                                        onClick={() => {
-                                            setPreviewModalSurveyUUID(
-                                                survey.uuid
-                                            );
-                                            setPreviewModalIsOpen(true);
-                                        }}
-                                        className="custom-contrast-btn dark:bg-gray-700 dark:hover:bg-blue-500 dark:border-blue-500 dark:text-blue-500 px-3 sm:px-4 py-1.5 sm:py-2 text-xs"
-                                    >
-                                        Preview
-                                    </button>
                                 </>
                             )}
 
