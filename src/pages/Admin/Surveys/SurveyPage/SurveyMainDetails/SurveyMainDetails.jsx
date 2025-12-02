@@ -54,8 +54,6 @@ const SurveyMainDetails = ({ id }) => {
         }
     };
 
-    console.log(surveyMainDetails);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
