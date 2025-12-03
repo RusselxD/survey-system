@@ -22,8 +22,6 @@ const Responses = ({ id }) => {
                 }
 
                 const res = await surveyPageAPI.getResponses(id, page, 10);
-                console.log(res);
-
                 setResponses((prev) => [...prev, ...res.data.data]);
 
                 setHasMore(res.data.hasMore);
