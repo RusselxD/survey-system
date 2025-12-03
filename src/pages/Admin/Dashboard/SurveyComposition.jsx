@@ -30,7 +30,7 @@ const surveyCompositionData = [
 const SurveyComposition = ({ data }) => {
     const { totalSurveys, avgQuestions, avgResponses } = data || {};
 
-    surveyCompositionData[0].data = totalSurveys;
+    surveyCompositionData[0].data = totalSurveys.toLocaleString();
     surveyCompositionData[1].data = avgQuestions;
     surveyCompositionData[2].data = avgResponses;
     return (

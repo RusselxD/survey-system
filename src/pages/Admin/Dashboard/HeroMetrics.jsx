@@ -31,7 +31,7 @@ const HeroMetrics = ({ data }) => {
 
     const {totalResponses, responseRate, completionRate} = data || {};
 
-    primaryMetrics[0].value = totalResponses;
+    primaryMetrics[0].value = totalResponses.toLocaleString();
     primaryMetrics[1].value = responseRate + "%";
     primaryMetrics[2].value = completionRate + "%";
 

@@ -79,13 +79,13 @@ const MetricsContainer = ({ metrics }) => {
         <div className="mt-3 grid grid-cols-3 gap-3">
             <MetricsCard
                 title="Total Views"
-                value={metrics.totalViews}
+                value={metrics.totalViews.toLocaleString()}
                 desc="Survey Opens"
                 icon={<Users className="text-blue-400" />}
             />
             <MetricsCard
                 title="Responses"
-                value={metrics.totalResponses}
+                value={metrics.totalResponses.toLocaleString()}
                 desc="All Submissions"
                 icon={<CheckCircle className="text-green-400" />}
             />

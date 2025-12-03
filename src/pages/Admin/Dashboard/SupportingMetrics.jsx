@@ -35,9 +35,9 @@ const SupportingMetrics = ({ data }) => {
 
     const {totalViews, activeSurveys, responsesThisWeek, avgTimeToCompleteMinutes} = data || {};
 
-    supportingMetrics[0].data = totalViews;
-    supportingMetrics[1].data = activeSurveys;
-    supportingMetrics[2].data = responsesThisWeek;
+    supportingMetrics[0].data = totalViews.toLocaleString();
+    supportingMetrics[1].data = activeSurveys.toLocaleString();
+    supportingMetrics[2].data = responsesThisWeek.toLocaleString();
     supportingMetrics[3].data = avgTimeToCompleteMinutes + " min";
 
     return (

@@ -1,14 +1,20 @@
 import apiClient from "../axiosConfig";
 
 export const surveyPageAPI = {
-    getSurveyMainDetails: (id) => apiClient.get(`ViewSurveyDetails/${id}`),
+    getSurveyMainDetails: (surveyId) =>
+        apiClient.get(`ViewSurveyDetails/${surveyId}`),
 
-    getSurveyCounts: (id) =>
-        apiClient.get(`ViewSurveyDetails/${id}/QuestionAndResponseCounts`),
-
-    getResponses: (id, page = 1, pageSize = 10) =>
+    getSurveyCounts: (surveyId) =>
         apiClient.get(
-            `ViewSurveyDetails/${id}/Responses?page=${page}&pageSize=${pageSize}`
+            `ViewSurveyDetails/${surveyId}/QuestionAndResponseCounts`
+        ),
+
+    getQuestionAnalytics: (surveyId) =>
+        apiClient.get(`ViewSurveyDetails/${surveyId}/QuestionAnalytics`),
+
+    getResponses: (surveyId, page = 1, pageSize = 10) =>
+        apiClient.get(
+            `ViewSurveyDetails/${surveyId}/Responses?page=${page}&pageSize=${pageSize}`
         ),
 
     getResponseAnswers: (responseId) =>
