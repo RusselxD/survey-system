@@ -1,5 +1,3 @@
-import React from "react";
-
 export const TextInput = ({ val, setVal, label, withLabel = true }) => {
     return (
         <fieldset className="fieldset w-full">

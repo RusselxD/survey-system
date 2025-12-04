@@ -32,7 +32,7 @@ const SurveyComposition = ({ data }) => {
 
     surveyCompositionData[0].data = totalSurveys.toLocaleString();
     surveyCompositionData[1].data = avgQuestions;
-    surveyCompositionData[2].data = avgResponses;
+    surveyCompositionData[2].data = avgResponses.toLocaleString();
     return (
         <div className="dark:bg-base-200 bg-white p-5 border dark:border-gray-700 shadow-md rounded-md">
             <h1 className="flex gap-2 ">

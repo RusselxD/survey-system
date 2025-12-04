@@ -2,6 +2,7 @@ import React from "react";
 import HorizontalBar from "../components/HorizontalBar";
 import QuestionStatsFooter from "../components/QuestionStatsFooter";
 import QuestionTypeLabel from "../components/QuestionTypeLabel";
+import QuestionHeader from "../components/QuestionHeader";
 
 const CheckboxesAnalytics = ({ question }) => {
     const analyticsData = JSON.parse(question.analyticsData);
@@ -11,14 +12,11 @@ const CheckboxesAnalytics = ({ question }) => {
             <div className="absolute top-3 right-3">
                 <QuestionTypeLabel questionType={question.questionType} />
             </div>
-            <div className="mb-4">
-                <span className="custom-primary-txt text-sm font-medium">
-                    Q{question.ordinal}.
-                </span>
-                <p className="custom-primary-txt font-medium mt-1">
-                    {question.questionText}
-                </p>
-            </div>
+            <QuestionHeader
+                ordinal={question.ordinal}
+                questionText={question.questionText}
+                required={question.required}
+            />
 
             <div className="mt-4">
                 {analyticsData.Options.map(

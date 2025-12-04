@@ -1,11 +1,16 @@
 import Sidebar from "../Sidebar/Sidebar";
-import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Navbar from "./Navbar";
 import { ToastContainer } from "react-toastify";
 
 const AdminPage = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const location = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location.pathname]);
 
     return (
         <div className="h-screen w-screen overflow-x-hidden">

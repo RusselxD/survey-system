@@ -76,12 +76,12 @@ const CoverImageContainer = ({ survey }) => {
     return (
         <div className="border dark:border-slate-700 border-gray-300 rounded-lg overflow-hidden w-full">
             <div className="px-5 py-4 font-medium dark:bg-base-300 bg-white custom-sec-txt text-sm">
-                Cover Image
+                Header Image
             </div>
             <img
                 src={survey.coverImageUrl}
                 alt="Cover"
-                className="w-full h-52 object-cover"
+                className="w-full h-40 object-cover"
             />
         </div>
     );

@@ -21,6 +21,12 @@ const SurveyView = () => {
                 setIsFetching(true);
                 const res = await respondentsAPI.getSurveyPreviewDetails(id);
 
+                // Check if survey has already been completed
+                if (respondentsAPI.hasSurveyBeenCompleted(res.data.id)) {
+                    navigate(`/s/${res.data.id}/completed`);
+                    return;
+                }
+
                 if (res.data.status === "archived") {
                     setIsArchived(true);
                 } else {
@@ -61,7 +67,7 @@ const SurveyView = () => {
                 <div className="dark:bg-base-300 bg-white rounded-xl overflow-hidden">
                     {/* Image Section (conditional) */}
                     {survey.coverImageUrl && (
-                        <div className="relative h-40 sm:h-48 overflow-hidden">
+                        <div className="relative h-28 sm:h-32 md:h-48 overflow-hidden">
                             <img
                                 src={survey.coverImageUrl}
                                 alt="Survey cover"

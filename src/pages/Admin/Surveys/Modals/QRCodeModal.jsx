@@ -1,6 +1,6 @@
 import { X, Download } from "lucide-react";
 import { useState } from "react";
-import { downloadFile, sanitizeFilename } from "../../../../../utils/download.js";
+import { downloadFile, sanitizeFilename } from "../../../../utils/download.js";
 
 const QRCodeModal = ({ qrModalData, onClose }) => {
     const [isDownloading, setIsDownloading] = useState(false);
@@ -43,12 +43,10 @@ const QRCodeModal = ({ qrModalData, onClose }) => {
                     />
                 </div>
 
-                {/* Title below QR code */}
                 <h3 className="font-semibold break-words text-base custom-primary-txt sm:text-lg text-center mb-4 sm:mb-6 px-2">
                     {qrModalData.title}
                 </h3>
 
-                {/* Download button at bottom */}
                 <button
                     onClick={handleDownload}
                     disabled={isDownloading}

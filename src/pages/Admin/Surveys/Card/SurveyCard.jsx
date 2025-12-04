@@ -1,7 +1,6 @@
 import { ScanQrCode, Users, FileText } from "lucide-react";
 import { useState } from "react";
-import QRCodeModal from "../Modals/QRCodeModal/QRCodeModal";
-import PreviewSurveyModal from "../Modals/PreviewSurveyModal/PreviewSurveyModal";
+import QRCodeModal from "../Modals/QRCodeModal";
 import { formatDistanceToNow } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -27,7 +26,7 @@ const ResponseAndQuestionsCount = ({ responsesCount, questionsCount }) => {
         <div className="flex gap-2 sm:gap-3 custom-sec-txt">
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ">
                 <Users size={14} className="sm:w-4 sm:h-4" />
-                <p>{responsesCount}</p>
+                <p>{responsesCount.toLocaleString()}</p>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ">
                 <FileText size={14} className="sm:w-4 sm:h-4" />
@@ -46,13 +45,10 @@ const SurveyCard = ({ survey }) => {
     const [qrModalIsOpen, setQrModalIsOpen] = useState(false);
     const [qrModalData, setQrModalData] = useState(null);
 
-    const [previewModalIsOpen, setPreviewModalIsOpen] = useState(false);
-    const [previewModalSurveyUUID, setPreviewModalSurveyUUID] = useState(null);
-
     return (
         <div className="card dark:bg-gray-700 bg-gray-100 dark:border-0 border border-gray-300 w-full max-w-sm shadow-sm hover:shadow-md transition-shadow relative">
             {survey.coverImageUrl && (
-                <figure className="relative aspect-video overflow-hidden">
+                <figure className="relative h-40 overflow-hidden">
                     <img
                         src={survey.coverImageUrl}
                         alt={survey.title}
@@ -152,13 +148,6 @@ const SurveyCard = ({ survey }) => {
                 <QRCodeModal
                     qrModalData={qrModalData}
                     onClose={() => setQrModalIsOpen(false)}
-                />
-            )}
-
-            {previewModalIsOpen && (
-                <PreviewSurveyModal
-                    surveyUUID={previewModalSurveyUUID}
-                    onClose={() => setPreviewModalIsOpen(false)}
                 />
             )}
         </div>
