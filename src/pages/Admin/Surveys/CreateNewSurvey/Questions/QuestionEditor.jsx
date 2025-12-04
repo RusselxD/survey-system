@@ -1,5 +1,4 @@
 import { Plus, X, Copy } from "lucide-react";
-import { useState } from "react";
 
 const QuestionEditor = ({ question, questionTypes, onUpdate }) => {
     const questionType = questionTypes.find((qt) => qt.id === question.type_id);
