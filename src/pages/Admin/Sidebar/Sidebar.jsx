@@ -2,7 +2,6 @@ import {
     ShieldCheck,
     LayoutDashboard,
     ClipboardList,
-    MessageSquare,
     BarChart3,
     Users,
     Settings,
@@ -14,7 +13,6 @@ const menus = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Analytics", icon: BarChart3, path: "/admin/analytics" },
     { name: "Surveys", icon: ClipboardList, path: "/admin/surveys" },
-    { name: "Responses", icon: MessageSquare, path: "/admin/responses" },
     { name: "Users", icon: Users, path: "/admin/users" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
 ];
