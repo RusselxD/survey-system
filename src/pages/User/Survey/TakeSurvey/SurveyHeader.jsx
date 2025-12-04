@@ -5,9 +5,9 @@ const SurveyHeader = ({ survey }) => {
     console.log(survey)
 
     return (
-        <div className="md:w-[80%] lg:w-[60%] xl:w-[50%] ">
+        <div className="md:w-[80%] lg:w-[60%] xl:w-[50%]">
             {/* Survey Card */}
-            <div className="dark:bg-base-300 bg-white rounded-xl overflow-hidden">
+            <div className="dark:bg-base-300 bg-white rounded-xl overflow-hidden border dark:border-slate-700 border-gray-300">
                 {/* Image Section (conditional) */}
                 {survey.coverImageUrl && (
                     <div className="relative h-32 md:h-40 overflow-hidden">

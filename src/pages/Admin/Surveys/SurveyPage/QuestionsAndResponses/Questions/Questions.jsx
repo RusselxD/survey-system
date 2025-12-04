@@ -26,8 +26,6 @@ const Questions = ({ id }) => {
         fetchData();
     }, [id]);
 
-    console.log(questionAnalytics)
-
     const renderQuestionAnalytics = (question) => {
         switch (question.questionType) {
             case "multiple_choice":
@@ -100,9 +98,9 @@ const Questions = ({ id }) => {
     if (isFetching) {
         return (
             <div className="space-y-3">
-                <div className="skeleton w-full h-40"></div>
-                <div className="skeleton w-full h-40"></div>
-                <div className="skeleton w-full h-40"></div>
+                <div className="skeleton w-full h-32"></div>
+                <div className="skeleton w-full h-32"></div>
+                <div className="skeleton w-full h-32"></div>
             </div>
         );
     }

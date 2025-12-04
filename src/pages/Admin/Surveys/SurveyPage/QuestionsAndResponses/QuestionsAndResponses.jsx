@@ -23,7 +23,7 @@ const TabHeader = ({
                             : "dark:text-gray-300"
                     } px-5 py-2 w-fit`}
                 >
-                    Questions &#40;{questionCount}&#41;
+                    Questions &#40;{questionCount.toLocaleString()}&#41;
                     {chosenTab == "questions" && (
                         <div className="absolute bottom-0 left-0 w-full h-0.5 dark:bg-blue-400 bg-blue-500 z-20"></div>
                     )}
@@ -36,7 +36,7 @@ const TabHeader = ({
                             : "dark:text-gray-300"
                     } px-5 py-2 w-fit`}
                 >
-                    Responses &#40;{responseCount}&#41;
+                    Responses &#40;{responseCount.toLocaleString()}&#41;
                     {chosenTab == "responses" && (
                         <div className="absolute bottom-0 left-0 w-full h-0.5 dark:bg-blue-400 bg-blue-500 z-20"></div>
                     )}

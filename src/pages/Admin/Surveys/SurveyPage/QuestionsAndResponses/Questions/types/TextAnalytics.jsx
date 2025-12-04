@@ -1,6 +1,7 @@
 import React from "react";
 import QuestionStatsFooter from "../components/QuestionStatsFooter";
 import QuestionTypeLabel from "../components/QuestionTypeLabel";
+import QuestionHeader from "../components/QuestionHeader";
 import { formatDistanceToNow } from "date-fns";
 
 const TextAnalytics = ({ question }) => {
@@ -21,14 +22,11 @@ const TextAnalytics = ({ question }) => {
             <div className="absolute top-3 right-3">
                 <QuestionTypeLabel questionType={question.questionType} />
             </div>
-            <div className="mb-4">
-                <span className="custom-primary-txt text-sm font-medium">
-                    Q{question.ordinal}.
-                </span>
-                <p className="custom-primary-txt font-medium mt-1">
-                    {question.questionText}
-                </p>
-            </div>
+            <QuestionHeader
+                ordinal={question.ordinal}
+                questionText={question.questionText}
+                required={question.required}
+            />
 
             <div className="mt-4">
                 <p className="text-sm dark:text-gray-400 text-gray-500 mb-3">

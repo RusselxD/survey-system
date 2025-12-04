@@ -63,7 +63,6 @@ const Surveys = () => {
         const fetchSurveys = async () => {
             try {
                 setSurveysLoading(true);
-                await new Promise((resolve) => setTimeout(resolve, 1000));
                 const res = await surveyAPI.getSurveys();
                 setSurveys(res.data);
                 setErrorLoadingSurveys(false);

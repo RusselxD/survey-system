@@ -23,9 +23,35 @@ export const respondentsAPI = {
             sessionId: getSessionId(surveyId),
         }),
 
+    startSurvey: (surveyId) =>
+        apiClient.post("TakeSurvey/Start", {
+            surveyId: surveyId,
+        }),
+
+    sumitSurveyResponse: (surveyId, responseData) =>
+        apiClient.put(`TakeSurvey/Submit/${surveyId}`, responseData),
+
     // Helper to check if a survey has been viewed
     hasSurveyBeenViewed: (surveyId) => {
         const storageKey = `survey_view_session_${surveyId}`;
         return sessionStorage.getItem(storageKey) !== null;
+    },
+
+    // Helper to mark survey as completed
+    markSurveyAsCompleted: (surveyId) => {
+        const storageKey = `survey_complete_session_${surveyId}`;
+        sessionStorage.setItem(storageKey, "completed");
+    },
+
+    // Helper to check if survey has been completed
+    hasSurveyBeenCompleted: (surveyId) => {
+        const storageKey = `survey_complete_session_${surveyId}`;
+        return sessionStorage.getItem(storageKey) !== null;
+    },
+
+    // Helper to clear completion status (for retaking survey)
+    clearSurveyCompletion: (surveyId) => {
+        const storageKey = `survey_complete_session_${surveyId}`;
+        sessionStorage.removeItem(storageKey);
     },
 };

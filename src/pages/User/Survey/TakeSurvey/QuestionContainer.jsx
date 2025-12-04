@@ -1,6 +1,9 @@
 import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { respondentsAPI } from "../../../../utils/api/respondents";
 
-const QuestionContainer = ({ survey }) => {
+const QuestionContainer = ({ survey, responseId }) => {
+    const navigate = useNavigate();
     const [responses, setResponses] = useState({});
     const [errors, setErrors] = useState({});
     // Store shuffled orders to prevent re-shuffling on re-renders
@@ -46,7 +49,7 @@ const QuestionContainer = ({ survey }) => {
         }
     };
 
-    const validateAndSubmit = () => {
+    const valid = () => {
         const newErrors = {};
 
         // Validate name if required
@@ -96,12 +99,44 @@ const QuestionContainer = ({ survey }) => {
                     behavior: "smooth",
                     block: "center",
                 });
-            return;
+            return false;
         }
 
-        // Submit survey
-        console.log("Survey responses:", responses);
-        // TODO: Call API to submit responses
+        return true;
+    };
+
+    const validateAndSubmit = async () => {
+        if (!valid()) return;
+
+        try {
+            const submitResponsePayload = {
+                respondentName: responses.name || null,
+                respondentEmail: responses.email || null,
+            };
+
+            const formattedAnswers = Object.entries(responses)
+                .filter(([key]) => !isNaN(key)) // Only include numeric keys
+                .map(([questionId, data]) => ({
+                    questionId: parseInt(questionId),
+                    answer: data.answer || null,
+                    metadata: data.metadata || null,
+                }));
+
+            submitResponsePayload.responseAnswers = formattedAnswers;
+
+            await respondentsAPI.sumitSurveyResponse(
+                responseId,
+                submitResponsePayload
+            );
+
+            // Mark survey as completed in session storage
+            respondentsAPI.markSurveyAsCompleted(survey.id);
+
+            // Navigate to completion page
+            navigate(`/s/${survey.id}/completed`);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const isValidEmail = (email) => {
@@ -150,7 +185,7 @@ const QuestionContainer = ({ survey }) => {
                 return (
                     <input
                         type="text"
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                        className="w-full px-3 text-sm md:text-base py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                         placeholder={metadata.placeholder || "Your answer"}
                         value={responses[questionId]?.answer || ""}
                         onChange={(e) =>
@@ -166,7 +201,7 @@ const QuestionContainer = ({ survey }) => {
             case "paragraph":
                 return (
                     <textarea
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600 min-h-[120px]"
+                        className="w-full px-3 py-2 text-sm md:text-base border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600 min-h-[120px]"
                         placeholder={metadata.placeholder || "Your answer"}
                         value={responses[questionId]?.answer || ""}
                         onChange={(e) =>
@@ -190,11 +225,11 @@ const QuestionContainer = ({ survey }) => {
                 const selectedMcOptionId = mcMetadata?.selectedOptionId || null;
 
                 return (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {mcOptions.map((option) => (
                             <label
                                 key={option.id}
-                                className="flex items-center space-x-3 cursor-pointer"
+                                className="flex items-center space-x-3 text-xs md:text-sm cursor-pointer"
                             >
                                 <input
                                     type="radio"
@@ -228,11 +263,11 @@ const QuestionContainer = ({ survey }) => {
                 const selectedOptionIds = cbMetadata?.selectedOptionIds || [];
 
                 return (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {cbOptions.map((option) => (
                             <label
                                 key={option.id}
-                                className="flex items-center space-x-3 cursor-pointer"
+                                className="flex text-sm md:text-base items-center space-x-3 cursor-pointer"
                             >
                                 <input
                                     type="checkbox"
@@ -276,7 +311,7 @@ const QuestionContainer = ({ survey }) => {
                 return (
                     <div className="space-y-2">
                         <select
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                            className="w-full px-3 py-2 text-xs md:text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                             value={
                                 selectedDropdownOptionId
                                     ? dropdownOptions.find(
@@ -348,12 +383,14 @@ const QuestionContainer = ({ survey }) => {
                                         }
                                         className="w-4 h-4 mb-1"
                                     />
-                                    <span className="text-sm">{value}</span>
+                                    <span className="text-xs md:text-sm">
+                                        {value}
+                                    </span>
                                 </label>
                             ))}
                         </div>
                         {(metadata.minLabel || metadata.maxLabel) && (
-                            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex justify-between text-xs md:text-sm text-gray-600 dark:text-gray-400">
                                 <span>{metadata.minLabel}</span>
                                 <span>{metadata.maxLabel}</span>
                             </div>
@@ -380,7 +417,7 @@ const QuestionContainer = ({ survey }) => {
                                     {metadata.columns.map((col) => (
                                         <th
                                             key={col.id}
-                                            className="border dark:border-gray-600 p-2 text-sm"
+                                            className="border font-medium dark:border-gray-600 p-2 text-xs md:text-sm"
                                         >
                                             {col.text}
                                         </th>
@@ -390,7 +427,7 @@ const QuestionContainer = ({ survey }) => {
                             <tbody>
                                 {mcGridRows.map((row) => (
                                     <tr key={row.id}>
-                                        <td className="border dark:border-gray-600 p-2 font-medium">
+                                        <td className="border dark:border-gray-600 p-2  text-xs md:text-sm font-normal">
                                             {row.text}
                                         </td>
                                         {metadata.columns.map((col) => (
@@ -450,7 +487,7 @@ const QuestionContainer = ({ survey }) => {
                                     {metadata.columns.map((col) => (
                                         <th
                                             key={col.id}
-                                            className="border dark:border-gray-600 p-2 text-sm"
+                                            className="border dark:border-gray-600 p-2 text-xs md:text-sm font-medium"
                                         >
                                             {col.text}
                                         </th>
@@ -460,7 +497,7 @@ const QuestionContainer = ({ survey }) => {
                             <tbody>
                                 {cbGridRows.map((row) => (
                                     <tr key={row.id}>
-                                        <td className="border dark:border-gray-600 p-2 font-medium">
+                                        <td className="border dark:border-gray-600 p-2 text-xs md:text-sm">
                                             {row.text}
                                         </td>
                                         {metadata.columns.map((col) => (
@@ -517,7 +554,7 @@ const QuestionContainer = ({ survey }) => {
                 return (
                     <input
                         type="date"
-                        className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                        className="px-3 py-2 text-xs md:text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                         value={responses[questionId]?.answer || ""}
                         onChange={(e) =>
                             handleResponseChange(
@@ -533,7 +570,7 @@ const QuestionContainer = ({ survey }) => {
                 return (
                     <input
                         type="time"
-                        className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                        className="px-3 py-2 text-xs md:text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                         value={responses[questionId]?.answer || ""}
                         onChange={(e) =>
                             handleResponseChange(
@@ -555,27 +592,34 @@ const QuestionContainer = ({ survey }) => {
     };
 
     return (
-        <div className="w-full md:w-[80%] lg:w-[60%] xl:w-[50%] space-y-4">
+        <div className="w-full md:w-[80%] lg:w-[60%] xl:w-[50%] space-y-2 sm:space-y-3">
             {/* Name Field */}
             {survey.askName && (
                 <div
                     id="question-name"
-                    className="p-6 dark:bg-base-300 bg-white rounded-lg"
+                    className={`border  p-4 md:p-5 dark:bg-base-300 bg-white rounded-lg ${
+                        errors.name
+                            ? "border-red-500"
+                            : "dark:border-slate-700 border-gray-300"
+                    }`}
                 >
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 text-sm md:text-base">
                         Name <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="text"
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                        className="w-full px-3 py-2 text-xs md:text-sm border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                         placeholder="Your name"
                         value={responses.name || ""}
                         onChange={(e) =>
-                            handleResponseChange("name", e.target.value)
+                            setResponses((prev) => ({
+                                ...prev,
+                                name: e.target.value,
+                            }))
                         }
                     />
                     {errors.name && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-xs md:text-sm mt-1">
                             {errors.name}
                         </p>
                     )}
@@ -586,22 +630,29 @@ const QuestionContainer = ({ survey }) => {
             {survey.askEmail && (
                 <div
                     id="question-email"
-                    className="p-6 dark:bg-base-300 bg-white rounded-lg"
+                    className={`border p-4 md:p-5 dark:bg-base-300 bg-white rounded-lg ${
+                        errors.email
+                            ? "border-red-500"
+                            : "dark:border-slate-700 border-gray-300"
+                    }`}
                 >
-                    <label className="block mb-2 font-medium">
+                    <label className="block mb-2 text-sm md:text-base">
                         Email <span className="text-red-500">*</span>
                     </label>
                     <input
                         type="email"
-                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
+                        className="w-full px-3 py-2 text-xs md:text-sm border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-base-100 dark:border-gray-600"
                         placeholder="your.email@example.com"
                         value={responses.email || ""}
                         onChange={(e) =>
-                            handleResponseChange("email", e.target.value)
+                            setResponses((prev) => ({
+                                ...prev,
+                                email: e.target.value,
+                            }))
                         }
                     />
                     {errors.email && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="text-red-500 text-xs md:text-sm mt-1">
                             {errors.email}
                         </p>
                     )}
@@ -613,10 +664,14 @@ const QuestionContainer = ({ survey }) => {
                 <div
                     key={question.id}
                     id={`question-${question.id}`}
-                    className="p-6 dark:bg-base-300 bg-white rounded-lg"
+                    className={`border p-4 sm:p-5 md:p-6 dark:bg-base-300 bg-white rounded-lg ${
+                        errors[question.id]
+                            ? "border-red-500"
+                            : "dark:border-slate-700 border-gray-300"
+                    }`}
                 >
-                    <div className="mb-4">
-                        <h3 className="text-lg font-medium">
+                    <div className="mb-2.5 font-medium">
+                        <h3 className="text-sm md:text-base">
                             {index + 1}. {question.text}
                             {question.required && (
                                 <span className="text-red-500 ml-1">*</span>
@@ -633,12 +688,12 @@ const QuestionContainer = ({ survey }) => {
             ))}
 
             {/* Submit Button */}
-            <div className="p-6 dark:bg-base-300 bg-white rounded-lg">
+            <div className="flex justify-end">
                 <button
                     onClick={validateAndSubmit}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors"
+                    className="w-fit mb-5 mt-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 md:px-7 text-sm md:text-base rounded-md transition-colors"
                 >
-                    Submit Survey
+                    Submit
                 </button>
             </div>
         </div>

@@ -27,8 +27,13 @@ import ForceUpdatePassword from "./pages/Admin/Login/ForceUpdatePassword.jsx";
 import CreateNewSurvey from "./pages/Admin/Surveys/CreateNewSurvey/CreateNewSurvey.jsx";
 import TakeSurvey from "./pages/User/Survey/TakeSurvey/TakeSurvey.jsx";
 import SurveyView from "./pages/User/Survey/SurveyView/SurveyView.jsx";
+import SurveyCompleted from "./pages/User/Survey/SurveyCompleted/SurveyCompleted.jsx";
 
 const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Navigate to="/admin" replace />,
+    },
     {
         path: "/login",
         element: <Login />,
@@ -58,7 +63,10 @@ const router = createBrowserRouter([
             { path: "dashboard", element: <Dashboard /> },
             { path: "analytics", element: <Analytics /> },
             { path: "surveys", element: <Surveys /> },
-            { path: "surveys/:id/view-details", element: <SurveyPage /> },
+            {
+                path: "surveys/:id/view-details",
+                element: <SurveyPage />,
+            },
             { path: "surveys/new", element: <CreateNewSurvey /> },
             { path: "surveys/:id/edit", element: <CreateNewSurvey /> },
             {
@@ -79,6 +87,10 @@ const router = createBrowserRouter([
     {
         path: "/s/:id/take",
         element: <TakeSurvey />,
+    },
+    {
+        path: "/s/:id/completed",
+        element: <SurveyCompleted />,
     },
     {
         path: "/not-found",
