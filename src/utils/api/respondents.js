@@ -28,8 +28,8 @@ export const respondentsAPI = {
             surveyId: surveyId,
         }),
 
-    sumitSurveyResponse: (surveyId, responseData) =>
-        apiClient.put(`TakeSurvey/Submit/${surveyId}`, responseData),
+    sumitSurveyResponse: (responseId, responseData) =>
+        apiClient.put(`TakeSurvey/Submit/${responseId}`, responseData),
 
     // Helper to check if a survey has been viewed
     hasSurveyBeenViewed: (surveyId) => {
