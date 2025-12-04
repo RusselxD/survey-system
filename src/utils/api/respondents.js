@@ -51,7 +51,9 @@ export const respondentsAPI = {
 
     // Helper to clear completion status (for retaking survey)
     clearSurveyCompletion: (surveyId) => {
-        const storageKey = `survey_complete_session_${surveyId}`;
-        sessionStorage.removeItem(storageKey);
+        const completionKey = `survey_complete_session_${surveyId}`;
+        const viewKey = `survey_view_session_${surveyId}`;
+        sessionStorage.removeItem(completionKey);
+        sessionStorage.removeItem(viewKey);
     },
 };

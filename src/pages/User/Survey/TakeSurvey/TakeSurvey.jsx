@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { respondentsAPI } from "../../../../utils/api/respondents";
 import SurveyViewSkeleton from "../SurveyView/SurveyViewSkeleton";
@@ -20,29 +20,27 @@ const TakeSurvey = () => {
                 setIsFetching(true);
                 const res = await respondentsAPI.getSurveyQuestions(id);
 
+                // Check if survey has already been completed
+                if (respondentsAPI.hasSurveyBeenCompleted(id)) {
+                    navigate(`/s/${id}/completed`);
+                    return;
+                }
+
                 if (res.data.status === "archived") {
-                    navigate(`/s/${res.data.id}`);
+                    navigate(`/s/${id}`);
                     return;
                 }
 
                 // Check if THIS specific survey has been viewed
-                if (!respondentsAPI.hasSurveyBeenViewed(res.data.id)) {
-                    navigate(`/s/${res.data.id}`);
-                    return;
-                }
-
-                // Check if survey has already been completed
-                if (respondentsAPI.hasSurveyBeenCompleted(res.data.id)) {
-                    navigate(`/s/${res.data.id}/completed`);
+                if (!respondentsAPI.hasSurveyBeenViewed(id)) {
+                    navigate(`/s/${id}`);
                     return;
                 }
 
                 setSurvey(res.data);
 
-                const startRes = await respondentsAPI.startSurvey(res.data.id);
+                const startRes = await respondentsAPI.startSurvey(id);
                 setResponseId(startRes.data.responseId);
-
-                console.log("Reponse Started");
             } catch (error) {
                 if (error.response && error.response.status === 404) {
                     navigate("/not-found");
@@ -54,9 +52,13 @@ const TakeSurvey = () => {
             }
         };
         fetchSurveyData();
-    }, [id]);
+    }, [id, navigate]);
 
     if (isFetching) {
+        return <SurveyViewSkeleton />;
+    }
+
+    if (!survey) {
         return <SurveyViewSkeleton />;
     }
 

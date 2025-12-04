@@ -59,7 +59,7 @@ const GridAnalytics = ({ question }) => {
                                             {col.Count > 0 ? (
                                                 <>
                                                     <div className="font-medium">
-                                                        {col.Count}
+                                                        {col.Count.toLocaleString()}
                                                     </div>
                                                     <div className="text-xs dark:text-gray-400 text-gray-500">
                                                         {col.Rate.toFixed(1)}%

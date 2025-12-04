@@ -12,7 +12,7 @@ const QuestionStatsFooter = ({
                     Total Responses:{" "}
                 </span>
                 <span className="custom-sec-txt font-medium">
-                    {totalResponses}
+                    {totalResponses.toLocaleString()}
                 </span>
             </div>
             <div>
@@ -20,7 +20,7 @@ const QuestionStatsFooter = ({
                     Answered:{" "}
                 </span>
                 <span className="custom-sec-txt font-medium">
-                    {answeredCount}
+                    {answeredCount.toLocaleString()}
                 </span>
             </div>
             <div>

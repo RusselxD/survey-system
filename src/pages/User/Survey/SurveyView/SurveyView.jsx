@@ -22,21 +22,19 @@ const SurveyView = () => {
                 const res = await respondentsAPI.getSurveyPreviewDetails(id);
 
                 // Check if survey has already been completed
-                if (respondentsAPI.hasSurveyBeenCompleted(res.data.id)) {
-                    navigate(`/s/${res.data.id}/completed`);
+                if (respondentsAPI.hasSurveyBeenCompleted(id)) {
+                    navigate(`/s/${id}/completed`);
                     return;
                 }
 
                 if (res.data.status === "archived") {
                     setIsArchived(true);
                 } else {
-                    await respondentsAPI.recordSurveyView(res.data.id);
+                    await respondentsAPI.recordSurveyView(id);
                 }
 
                 setSurvey(res.data);
             } catch (error) {
-                console.log("Logging Error");
-                console.log(error);
                 if (error.response && error.response.status === 404) {
                     navigate("/not-found");
                     return;
@@ -46,7 +44,7 @@ const SurveyView = () => {
             }
         };
         fetchSurveyData();
-    }, [id]);
+    }, [id, navigate]);
 
     if (isFetching) {
         return <SurveyViewSkeleton />;
