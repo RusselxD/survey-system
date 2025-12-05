@@ -1,7 +1,10 @@
 import apiClient from "../axiosConfig";
 
 export const settingsAPI = {
-    getSystemSettings: () => apiClient.get("/SystemSettings"),
+    getSystemSettings: () => apiClient.get("/Settings/SystemSettings"),
+
+    updatePrivacyText: (key, textPayload) =>
+        apiClient.put(`/Settings/SystemSettings/Text/${key}`, textPayload),
 
     getLocations: () => apiClient.get("/Locations"),
 

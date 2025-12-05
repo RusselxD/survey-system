@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import { settingsAPI } from "../../../utils/api/pages/settingsPage";
+import { useAuth } from "../../../context/AuthContext";
 
-const TextSetting = ({ title, val, setVal, originalVal, settingKey }) => {
+const TextSetting = ({
+    title,
+    val,
+    setVal,
+    originalVal,
+    settingKey,
+    toastSuccess,
+    toastError,
+}) => {
     const [isEditing, setIsEditing] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -13,14 +23,22 @@ const TextSetting = ({ title, val, setVal, originalVal, settingKey }) => {
         setIsEditing(false);
     };
 
-    const handleSubmit = () => {
-        // API call will be implemented later
-        const payload = {
-            key: settingKey,
-            value: JSON.stringify({ text: val }),
-        };
-        console.log(`Submitting ${title}:`, payload);
-        setIsEditing(false);
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        try {
+            const payload = {
+                text: val,
+            };
+
+            await settingsAPI.updatePrivacyText(settingKey, payload);
+
+            toastSuccess(`${title} updated successfully.`);
+            setIsEditing(false);
+        } catch (error) {
+            toastError(`Failed to update ${title}.`);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -53,13 +71,18 @@ const TextSetting = ({ title, val, setVal, originalVal, settingKey }) => {
                         <button
                             onClick={handleCancel}
                             className="text-sm bg-gray-600 hover:bg-gray-700 text-white py-2 px-5 rounded-md transition-colors"
+                            disabled={isSubmitting}
                         >
                             Cancel
                         </button>
                         <button
                             onClick={handleSubmit}
-                            className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-5 rounded-md transition-colors"
+                            className="text-sm bg-blue-600 hover:bg-blue-700 text-white py-2 px-5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            disabled={isSubmitting}
                         >
+                            {isSubmitting && (
+                                <span className="loading loading-spinner loading-sm"></span>
+                            )}
                             Submit
                         </button>
                     </>
@@ -70,6 +93,7 @@ const TextSetting = ({ title, val, setVal, originalVal, settingKey }) => {
 };
 
 const TextSettingsContainer = () => {
+    const { toastSuccess, toastError } = useAuth();
     const [isFetching, setIsFetching] = useState(false);
 
     const [privacyText, setPrivacyText] = useState("");
@@ -85,21 +109,19 @@ const TextSettingsContainer = () => {
 
                 const consentSetting = res.data.find(
                     (s) => s.key === "consent_text"
-                ).value;
+                );
                 const privacySetting = res.data.find(
                     (s) => s.key === "privacy_text"
-                ).value;
+                );
 
                 if (consentSetting) {
-                    const text = JSON.parse(consentSetting).text;
-                    setConsentText(text);
-                    setOriginalConsentText(text);
+                    setConsentText(consentSetting.value);
+                    setOriginalConsentText(consentSetting.value);
                 }
 
                 if (privacySetting) {
-                    const text = JSON.parse(privacySetting).text;
-                    setPrivacyText(text);
-                    setOriginalPrivacyText(text);
+                    setPrivacyText(privacySetting.value);
+                    setOriginalPrivacyText(privacySetting.value);
                 }
             } catch (error) {
             } finally {
@@ -136,6 +158,8 @@ const TextSettingsContainer = () => {
                 setVal={setConsentText}
                 originalVal={originalConsentText}
                 settingKey="consent_text"
+                toastSuccess={toastSuccess}
+                toastError={toastError}
             />
 
             <TextSetting
@@ -144,6 +168,8 @@ const TextSettingsContainer = () => {
                 setVal={setPrivacyText}
                 originalVal={originalPrivacyText}
                 settingKey="privacy_text"
+                toastSuccess={toastSuccess}
+                toastError={toastError}
             />
         </div>
     );

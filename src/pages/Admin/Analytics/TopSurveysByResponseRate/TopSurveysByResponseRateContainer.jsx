@@ -25,9 +25,7 @@ const TopSurveysByResponseRateContainer = () => {
         };
         fetchData();
     }, [refetch]);
-
-    console.log(topSurveyByResponsesData);
-
+    
     if (isFetching) {
         return <div className="skeleton w-[60%]"></div>;
     }

@@ -46,7 +46,7 @@ const SurveysRankedByResponseCountContainer = () => {
     };
 
     return (
-        <div className="custom-container w-[40%] overflow-x-hidden sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
+        <div className="custom-container w-[40%] overflow-x-hidden sm:p-4 lg:p-5  dark:bg-base-300 bg-white">
             <h1 className="flex items-center gap-2 mb-2">
                 <ClipboardList className="text-green-400" />
                 <span className="custom-primary-txt font-semibold text-sm">
@@ -54,7 +54,7 @@ const SurveysRankedByResponseCountContainer = () => {
                 </span>
             </h1>
 
-            <div className="flex flex-col max-h-[22rem] overflow-auto">
+            <div className="flex flex-col max-h-[22rem] pr-2 overflow-auto">
                 {surveys.map((survey, i) => {
                     const responseCount = survey.responseCount;
                     const displayCount = formatCount(responseCount);

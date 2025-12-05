@@ -20,7 +20,7 @@ const menus = [
 const appTitle = import.meta.env.VITE_APP_TITLE;
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-    const { hasPermission } = useAuth();
+    const { hasPermission, hasAnyPermission } = useAuth();
 
     return (
         <>
@@ -54,7 +54,27 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 {/* Menu Items */}
                 <ul className="menu space-y-3 font-light w-full px-4 py-5">
                     {menus.map((menu, i) => {
-                        if(menu.name == "Users" && !hasPermission("users.manage")){return null}
+                        if (
+                            menu.name == "Users" &&
+                            !hasAnyPermission(["users.manage", "roles.manage"])
+                        ) {
+                            return null;
+                        }
+                        if (
+                            menu.name == "Settings" &&
+                            !hasPermission("system.manage")
+                        ) {
+                            return null;
+                        }
+                        if (
+                            menu.name == "Analytics" &&
+                            !hasAnyPermission([
+                                "analytics.view",
+                                "analytics.export",
+                            ])
+                        ) {
+                            return null;
+                        }
                         return (
                             <li key={i}>
                                 <NavLink

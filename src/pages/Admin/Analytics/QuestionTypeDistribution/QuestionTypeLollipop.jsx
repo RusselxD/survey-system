@@ -3,37 +3,6 @@ import { useEffect, useState, useMemo } from "react";
 const QuestionTypeLollipop = ({ dataset }) => {
     const { questionTypes, counts } = dataset;
 
-    const [isDark, setIsDark] = useState(
-        () => window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-
-    useEffect(() => {
-        const updateTheme = () => {
-            const theme = document.documentElement.getAttribute("data-theme");
-            const prefersDark =
-                theme === null
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    : theme === "dark";
-            setIsDark(prefersDark);
-        };
-
-        updateTheme();
-
-        const observer = new MutationObserver(updateTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", updateTheme);
-
-        return () => {
-            observer.disconnect();
-            mediaQuery.removeEventListener("change", updateTheme);
-        };
-    }, []);
-
     // Calculate total and percentages
     const totalCount = counts.reduce((sum, count) => sum + count, 0);
 

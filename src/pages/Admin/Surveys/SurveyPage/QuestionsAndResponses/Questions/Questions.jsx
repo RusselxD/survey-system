@@ -115,6 +115,8 @@ const Questions = ({ id }) => {
         );
     }
 
+    console.log(questionAnalytics)
+
     return (
         <div className="space-y-4">
             {questionAnalytics.map((question) =>
