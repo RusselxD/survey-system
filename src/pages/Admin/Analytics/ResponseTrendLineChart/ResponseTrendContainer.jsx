@@ -121,6 +121,7 @@ const ResponseTrendContainer = () => {
             <ResponseTrend
                 dataset={responseTrendData}
                 duration={selectedRange.label}
+                xAxisLabel={selectedRange.granularity + "s"}
             />
         </div>
     );
