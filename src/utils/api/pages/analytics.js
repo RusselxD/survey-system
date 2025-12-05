@@ -1,8 +1,10 @@
 import apiClient from "../axiosConfig";
 
 export const analyticsAPI = {
-    getResponseTrends: (days) =>
-        apiClient.get(`/Analytics/ResponseTrends/${days}`),
+    getResponseTrends: (days, granularity) =>
+        apiClient.get(`/Analytics/ResponseTrends/${days}`, {
+            params: { granularity: granularity },
+        }),
 
     getTopSurveysByResponseRate: () =>
         apiClient.get("/Analytics/TopSurveysByResponseRate"),
@@ -16,7 +18,9 @@ export const analyticsAPI = {
         apiClient.get("/Analytics/CompletionTimeDistribution"),
 
     getResponsesByLocation: (includeAll) =>
-        apiClient.get(`/Analytics/ResponsesByLocation/${includeAll}`),
+        apiClient.get(`/Analytics/ResponsesByLocation`, {
+            params: { includeAll: includeAll },
+        }),
 
     getResponsesByServiceType: () =>
         apiClient.get("/Analytics/ResponsesByServiceType"),

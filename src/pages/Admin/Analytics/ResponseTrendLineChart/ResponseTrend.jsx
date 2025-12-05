@@ -25,7 +25,7 @@ ChartJS.register(
     Filler
 );
 
-const ResponseTrend = ({ dataset, days }) => {
+const ResponseTrend = ({ dataset, duration }) => {
     const { labels, responseCounts, surveyTrends } = dataset;
 
     const { textColor, gridColor } = useAuth();
@@ -66,7 +66,7 @@ const ResponseTrend = ({ dataset, days }) => {
                 },
                 title: {
                     display: true,
-                    text: `Response Trends (Last ${days} Days)`,
+                    text: `Response Trends (Last ${duration})`,
                     color: textColor,
                     font: {
                         size: 16,

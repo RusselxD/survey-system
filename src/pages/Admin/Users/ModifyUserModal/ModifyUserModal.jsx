@@ -59,6 +59,7 @@ const ModifyUserModal = ({
             onClose();
             toastSuccess("User deleted successfully.");
         } catch (error) {
+            console.log(error)
             toastError(
                 error.response?.data?.message || "Something went wrong."
             );

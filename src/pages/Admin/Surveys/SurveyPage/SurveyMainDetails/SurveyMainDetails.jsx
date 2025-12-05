@@ -54,6 +54,13 @@ const SurveyMainDetails = ({ id }) => {
         }
     };
 
+    const handleUpdateSurveyStatus = (newStatus) => {
+        setSurveyMainDetails((prev) => ({
+            ...prev,
+            status: newStatus,
+        }));
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -83,7 +90,10 @@ const SurveyMainDetails = ({ id }) => {
 
     return (
         <div className=" flex gap-4">
-            <MainDetails survey={surveyMainDetails} />
+            <MainDetails
+                survey={surveyMainDetails}
+                handleUpdateSurveyStatus={handleUpdateSurveyStatus}
+            />
             <PhotosContainer
                 survey={surveyMainDetails}
                 generatingQrCode={generatingQrCode}

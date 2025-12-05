@@ -208,9 +208,6 @@ export function AuthProvider({ children }) {
         ? "rgba(255, 255, 255, 0.1)"
         : "rgba(0, 0, 0, 0.1)";
 
-    console.log(user);
-    console.log(permissions);
-
     return (
         <AuthContext.Provider
             value={{

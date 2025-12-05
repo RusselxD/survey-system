@@ -1,65 +1,5 @@
-import {
-    BarChart3,
-    Briefcase,
-    CheckCircle,
-    Clock,
-    MapPin,
-    TrendingUp,
-    Users,
-} from "lucide-react";
-
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    });
-};
-
-const SurveyDetailsCard = ({ survey }) => {
-    return (
-        <div className="custom-container p-7 dark:bg-base-300 bg-white">
-            <h1 className="custom-primary-txt font-bold text-xl">
-                {survey.title}
-            </h1>
-            {survey.description && (
-                <p className="custom-sec-txt my-2 leading-8">
-                    {survey.description}
-                </p>
-            )}
-            <div className="flex gap-5 text-sm">
-                <p className="space-x-2">
-                    <span className="text-gray-600 dark:text-gray-400">
-                        Created by:
-                    </span>
-                    <span className="custom-sec-txt">{survey.createdBy}</span>
-                </p>
-                <p className="space-x-2">
-                    <span className="text-gray-600 dark:text-gray-400">
-                        Last updated:
-                    </span>
-                    <span className="custom-sec-txt">
-                        {formatDate(survey.updatedAt)}
-                    </span>
-                </p>
-            </div>
-            {survey.locationName && (
-                <div className="gap-3 text-sm mt-3 flex items-center custom-sec-txt">
-                    <MapPin size={22} />
-                    <span>{survey.locationName}</span>
-                </div>
-            )}
-
-            {survey.serviceTypeName && (
-                <div className="gap-3 text-sm mt-3 flex items-center custom-sec-txt">
-                    <Briefcase size={22} />
-                    <span>{survey.serviceTypeName}</span>
-                </div>
-            )}
-        </div>
-    );
-};
+import { BarChart3, CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
+import SurveyDetailsCard from "./SurveyDetailsCard";
 
 const MetricsCard = ({ title, value, desc, icon }) => {
     return (
@@ -111,10 +51,13 @@ const MetricsContainer = ({ metrics }) => {
     );
 };
 
-const MainDetails = ({ survey }) => {
+const MainDetails = ({ survey, handleUpdateSurveyStatus }) => {
     return (
         <div className=" flex-1">
-            <SurveyDetailsCard survey={survey} />
+            <SurveyDetailsCard
+                survey={survey}
+                handleUpdateSurveyStatus={handleUpdateSurveyStatus}
+            />
             <MetricsContainer metrics={survey.mainMetrics} />
         </div>
     );

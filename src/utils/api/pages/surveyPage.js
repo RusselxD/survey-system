@@ -19,4 +19,13 @@ export const surveyPageAPI = {
 
     getResponseAnswers: (responseId) =>
         apiClient.get(`ViewSurveyDetails/Response/${responseId}/Answers`),
+
+    archiveSurvey: (surveyId) =>
+        apiClient.put(`ViewSurveyDetails/Archive/${surveyId}`),
+
+    unarchiveSurvey: (surveyId) =>
+        apiClient.put(`ViewSurveyDetails/Unarchive/${surveyId}`),
+
+    deleteSurvey: (surveyId) =>
+        apiClient.delete(`ViewSurveyDetails/${surveyId}`),
 };
