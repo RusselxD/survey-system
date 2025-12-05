@@ -45,9 +45,7 @@ const router = createBrowserRouter([
         path: "/admin",
         element: (
             <ProtectedRoute>
-                <ErrorBoundary>
-                    <AdminPage />
-                </ErrorBoundary>
+                <AdminPage />
             </ProtectedRoute>
         ),
         children: [
@@ -56,19 +54,65 @@ const router = createBrowserRouter([
                 element: <Navigate to="/admin/dashboard" replace />,
             },
             { path: "dashboard", element: <Dashboard /> },
-            { path: "analytics", element: <Analytics /> },
+            {
+                path: "analytics",
+                element: (
+                    <ProtectedRoute
+                        requiredAnyPermissions={[
+                            "analytics.view",
+                            "analytics.export",
+                        ]}
+                    >
+                        <Analytics />
+                    </ProtectedRoute>
+                ),
+            },
             { path: "surveys", element: <Surveys /> },
             {
                 path: "surveys/:id/view-details",
                 element: <SurveyPage />,
             },
-            { path: "surveys/new", element: <CreateNewSurvey /> },
-            { path: "surveys/:id/edit", element: <CreateNewSurvey /> },
+            {
+                path: "surveys/new",
+                element: (
+                    <ProtectedRoute
+                        requiredPermissions={["survey.create", "survey.manage"]}
+                    >
+                        <CreateNewSurvey />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: "surveys/:id/edit",
+                element: (
+                    <ProtectedRoute
+                        requiredPermissions={["survey.create", "survey.manage"]}
+                    >
+                        <CreateNewSurvey />
+                    </ProtectedRoute>
+                ),
+            },
             {
                 path: "users",
-                element: <UsersPage />,
+                element: (
+                    <ProtectedRoute
+                        requiredAnyPermissions={[
+                            "users.manage",
+                            "roles.manage",
+                        ]}
+                    >
+                        <UsersPage />
+                    </ProtectedRoute>
+                ),
             },
-            { path: "settings", element: <Settings /> },
+            {
+                path: "settings",
+                element: (
+                    <ProtectedRoute requiredPermissions="system.manage">
+                        <Settings />
+                    </ProtectedRoute>
+                ),
+            },
         ],
     },
     {
@@ -94,7 +138,9 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-    <AuthProvider>
-        <RouterProvider router={router} />
-    </AuthProvider>
+    <ErrorBoundary>
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    </ErrorBoundary>
 );

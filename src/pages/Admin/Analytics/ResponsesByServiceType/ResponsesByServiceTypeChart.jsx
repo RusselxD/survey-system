@@ -1,6 +1,7 @@
-import React, { useId, useEffect, useState, useMemo } from "react";
+import { useId, useMemo } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import { useAuth } from "../../../../context/AuthContext";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -8,40 +9,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const ResponsesByServiceTypeChart = ({ dataset }) => {
     const { serviceTypes, responseCounts } = dataset;
 
-    // Initialize theme state based on system preference (dark mode detection)
-    const [isDark, setIsDark] = useState(
-        () => window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-
-    // Watch for theme changes from both data-theme attribute and system preference
-    useEffect(() => {
-        const updateTheme = () => {
-            const theme = document.documentElement.getAttribute("data-theme");
-            const prefersDark =
-                theme === null
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    : theme === "dark";
-            setIsDark(prefersDark);
-        };
-
-        updateTheme();
-
-        const observer = new MutationObserver(updateTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", updateTheme);
-
-        return () => {
-            observer.disconnect();
-            mediaQuery.removeEventListener("change", updateTheme);
-        };
-    }, []);
-
-    const textColor = isDark ? "#ffffff" : "#000000";
+    const { textColor, isDark } = useAuth();
 
     // Calculate total and percentages
     const totalResponses = responseCounts.reduce(
@@ -193,7 +161,7 @@ const ResponsesByServiceTypeChart = ({ dataset }) => {
 
     return (
         <div className="w-[90%] py-2">
-            <div className="w-full h-[25rem]" >
+            <div className="w-full h-[25rem]">
                 <Doughnut
                     data={data}
                     options={options}

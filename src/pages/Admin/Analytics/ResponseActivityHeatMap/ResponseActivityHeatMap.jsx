@@ -1,42 +1,9 @@
-import { useEffect, useState } from "react";
+import { useAuth } from "../../../../context/AuthContext";
 
 const ResponseActivityHeatMap = ({ dataset, view = "hourly" }) => {
     const { labels, responseCounts } = dataset;
 
-    // Initialize theme state based on system preference (dark mode detection)
-    const [isDark, setIsDark] = useState(
-        () => window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-
-    // Watch for theme changes from both data-theme attribute and system preference
-    useEffect(() => {
-        const updateTheme = () => {
-            const theme = document.documentElement.getAttribute("data-theme");
-            const prefersDark =
-                theme === null
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    : theme === "dark";
-            setIsDark(prefersDark);
-        };
-
-        updateTheme();
-
-        const observer = new MutationObserver(updateTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", updateTheme);
-
-        return () => {
-            observer.disconnect();
-            mediaQuery.removeEventListener("change", updateTheme);
-        };
-    }, []);
-
-    const textColor = isDark ? "#ffffff" : "#000000";
+    const { textColor, isDark } = useAuth();
 
     // Calculate intensity for color mapping
     const maxCount = Math.max(...responseCounts);
@@ -150,7 +117,7 @@ const ResponseActivityHeatMap = ({ dataset, view = "hourly" }) => {
                                                     color: "#ffffff",
                                                 }}
                                             >
-                                                {count}
+                                                {count.toLocaleString()}
                                             </div>
                                         )}
 
@@ -160,7 +127,7 @@ const ResponseActivityHeatMap = ({ dataset, view = "hourly" }) => {
                                                 className="text-xs absolute h-full bottom-4 font-semibold mb-1"
                                                 style={{ color: textColor }}
                                             >
-                                                {count}
+                                                {count.toLocaleString()}
                                             </div>
                                         )}
                                     </div>

@@ -1,4 +1,4 @@
-import React, { useId, useEffect, useState, useMemo } from "react";
+import { useId, useMemo } from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,6 +11,7 @@ import {
     Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { useAuth } from "../../../../context/AuthContext";
 
 // Register Chart.js components
 ChartJS.register(
@@ -27,50 +28,7 @@ ChartJS.register(
 const ResponseTrend = ({ dataset, days }) => {
     const { labels, responseCounts, surveyTrends } = dataset;
 
-    // Initialize theme state based on system preference (dark mode detection)
-    const [isDark, setIsDark] = useState(
-        () => window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-
-    // Watch for theme changes from both data-theme attribute and system preference
-    useEffect(() => {
-        const updateTheme = () => {
-            // Check if data-theme is explicitly set on <html>
-            const theme = document.documentElement.getAttribute("data-theme");
-            // If null, fall back to system preference; otherwise use the attribute value
-            const prefersDark =
-                theme === null
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    : theme === "dark";
-            setIsDark(prefersDark);
-        };
-
-        // Run initial check
-        updateTheme();
-
-        // Listen for changes to data-theme attribute (manual theme toggle)
-        const observer = new MutationObserver(updateTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-
-        // Listen for system theme changes (OS-level dark/light mode)
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", updateTheme);
-
-        // Cleanup listeners on unmount
-        return () => {
-            observer.disconnect();
-            mediaQuery.removeEventListener("change", updateTheme);
-        };
-    }, []);
-
-    // Define colors based on current theme (white text in dark, black in light)
-    const textColor = isDark ? "#ffffff" : "#000000";
-    const gridColor = isDark
-        ? "rgba(255, 255, 255, 0.1)"
-        : "rgba(0, 0, 0, 0.1)";
+    const { textColor, gridColor } = useAuth();
 
     // Generate colors dynamically based on number of surveys
     const generateColors = (count) => {

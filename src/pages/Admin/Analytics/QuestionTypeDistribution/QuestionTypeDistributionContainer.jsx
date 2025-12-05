@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import QuestionTypeLollipop from "./QuestionTypeLollipop";
 import { useAuth } from "../../../../context/AuthContext";
 import { analyticsAPI } from "../../../../utils/api/pages/analytics";
@@ -43,7 +43,7 @@ const QuestionTypeDistributionContainer = () => {
 
     return (
         <div className="custom-container overflow-hidden w-full sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
-            <QuestionTypeLollipop dataset={questionDistributionData} />{" "}
+            <QuestionTypeLollipop dataset={questionDistributionData} />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -8,7 +8,7 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { useAuth } from "../../../../context/AuthContext";
 
 // Register Chart.js components
 ChartJS.register(
@@ -23,43 +23,7 @@ ChartJS.register(
 const ResponsesByLocation = ({ dataset }) => {
     const { locations, responseCounts } = dataset;
 
-    // Initialize theme state based on system preference (dark mode detection)
-    const [isDark, setIsDark] = useState(
-        () => window.matchMedia("(prefers-color-scheme: dark)").matches
-    );
-
-    // Watch for theme changes from both data-theme attribute and system preference
-    useEffect(() => {
-        const updateTheme = () => {
-            const theme = document.documentElement.getAttribute("data-theme");
-            const prefersDark =
-                theme === null
-                    ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    : theme === "dark";
-            setIsDark(prefersDark);
-        };
-
-        updateTheme();
-
-        const observer = new MutationObserver(updateTheme);
-        observer.observe(document.documentElement, {
-            attributes: true,
-            attributeFilter: ["data-theme"],
-        });
-
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        mediaQuery.addEventListener("change", updateTheme);
-
-        return () => {
-            observer.disconnect();
-            mediaQuery.removeEventListener("change", updateTheme);
-        };
-    }, []);
-
-    const textColor = isDark ? "#ffffff" : "#000000";
-    const gridColor = isDark
-        ? "rgba(255, 255, 255, 0.1)"
-        : "rgba(0, 0, 0, 0.1)";
+    const { textColor, isDark } = useAuth();
 
     // Calculate total and percentages
     const totalResponses = responseCounts.reduce(

@@ -1,8 +1,18 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export function ProtectedRoute({ children, requiredPermissions }) {
-    const { user, hasPermission, hasAllPermissions, loading } = useAuth();
+export function ProtectedRoute({
+    children,
+    requiredPermissions,
+    requiredAnyPermissions,
+}) {
+    const {
+        user,
+        hasPermission,
+        hasAllPermissions,
+        hasAnyPermission,
+        loading,
+    } = useAuth();
 
     // Show nothing while checking authentication
     if (loading) {
@@ -31,6 +41,20 @@ export function ProtectedRoute({ children, requiredPermissions }) {
             allowed = hasAllPermissions(requiredPermissions);
         } else {
             allowed = hasPermission(requiredPermissions);
+        }
+
+        if (!allowed) {
+            return <Navigate to="/unauthorized" replace />;
+        }
+    }
+
+    if (requiredAnyPermissions) {
+        let allowed = false;
+
+        if (Array.isArray(requiredAnyPermissions)) {
+            allowed = hasAnyPermission(requiredAnyPermissions);
+        } else {
+            allowed = hasPermission(requiredAnyPermissions);
         }
 
         if (!allowed) {
