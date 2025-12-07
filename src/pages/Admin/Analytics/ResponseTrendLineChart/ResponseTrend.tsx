@@ -31,6 +31,7 @@ interface ResponseTrendProps {
     dataset: ResponseTrends;
     duration: string;
     xAxisLabel: string;
+    pdfMode?: boolean;
 }
 
 interface ColorPair {
@@ -42,10 +43,15 @@ const ResponseTrend = ({
     dataset,
     duration,
     xAxisLabel,
+    pdfMode = false,
 }: ResponseTrendProps): React.JSX.Element => {
     const { labels, responseCounts, surveyTrends } = dataset;
 
     const { textColor, gridColor } = useAuth();
+
+    // Override colors for PDF export (light background)
+    const displayTextColor = pdfMode ? "#000000" : textColor;
+    const displayGridColor = pdfMode ? "rgba(0, 0, 0, 0.1)" : gridColor;
 
     // Generate colors dynamically based on number of surveys
     const generateColors = (count: number): ColorPair[] => {
@@ -78,13 +84,13 @@ const ResponseTrend = ({
                     labels: {
                         usePointStyle: true,
                         padding: 20,
-                        color: textColor,
+                        color: displayTextColor,
                     },
                 },
                 title: {
                     display: true,
                     text: `Response Trends (Last ${duration})`,
-                    color: textColor,
+                    color: displayTextColor,
                     font: {
                         size: 16,
                         weight: "bold" as const,
@@ -122,15 +128,15 @@ const ResponseTrend = ({
                         font: {
                             size: 12,
                         },
-                        color: textColor,
+                        color: displayTextColor,
                     },
                     grid: {
-                        color: gridColor,
+                        color: displayGridColor,
                     },
                     title: {
                         display: true,
                         text: "Number of Responses",
-                        color: textColor,
+                        color: displayTextColor,
                         font: {
                             size: 12,
                             weight: "bold" as const,
@@ -139,18 +145,18 @@ const ResponseTrend = ({
                 },
                 x: {
                     grid: {
-                        color: gridColor,
+                        color: displayGridColor,
                     },
                     ticks: {
                         font: {
                             size: 12,
                         },
-                        color: textColor,
+                        color: displayTextColor,
                     },
                     title: {
                         display: true,
                         text: xAxisLabel,
-                        color: textColor,
+                        color: displayTextColor,
                         font: {
                             size: 12,
                             weight: "bold" as const,
@@ -173,7 +179,7 @@ const ResponseTrend = ({
                 },
             },
         }),
-        [textColor, gridColor, duration, largestValue, xAxisLabel]
+        [displayTextColor, displayGridColor, duration, largestValue, xAxisLabel]
     );
 
     // Chart data structure for react-chartjs-2

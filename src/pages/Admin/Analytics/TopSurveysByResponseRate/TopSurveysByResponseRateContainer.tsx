@@ -6,6 +6,7 @@ import {
 } from "../../../../utils/api/pages/analytics";
 import { useAuth } from "../../../../context/AuthContext";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
+import DownloadExcelButton from "../../../../components/reusable/DownloadExcelButton";
 
 const TopSurveysByResponseRateContainer = (): React.JSX.Element => {
     const { toastError } = useAuth();
@@ -44,7 +45,21 @@ const TopSurveysByResponseRateContainer = (): React.JSX.Element => {
     }
 
     return (
-        <div className="custom-container w-[60%] sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
+        <div className="custom-container w-[60%] sm:p-4 lg:p-5 dark:bg-base-300 bg-white relative">
+            <div className="absolute left-3 top-3 z-10">
+                <DownloadExcelButton
+                    data={topSurveyByResponsesData.surveys.map(
+                        (surveyName, index) => ({
+                            "Survey Name": surveyName,
+                            "Response Count":
+                                topSurveyByResponsesData.responseCounts[index],
+                            "Response Rate": `${topSurveyByResponsesData.responseRates[index]}%`,
+                        })
+                    )}
+                    fileName="Top-Surveys-By-Response-Rate"
+                    sheetName="Response Rates"
+                />
+            </div>
             <TopSurveysByResponse dataset={topSurveyByResponsesData} />
         </div>
     );

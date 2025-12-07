@@ -65,6 +65,8 @@ const QuestionsAndResponses = ({
     const [questionCount, setQuestionCount] = useState<number>(0);
     const [responseCount, setResponseCount] = useState<number>(0);
     const [isFetchingCounts, setIsFetchingCounts] = useState<boolean>(true);
+    const [hasLoadedResponses, setHasLoadedResponses] =
+        useState<boolean>(false);
 
     useEffect(() => {
         const fetchCounts = async () => {
@@ -103,7 +105,13 @@ const QuestionsAndResponses = ({
                     display: chosenTab === "responses" ? "block" : "none",
                 }}
             >
-                <Responses id={id} />
+                {(chosenTab === "responses" || hasLoadedResponses) && (
+                    <Responses
+                        id={id}
+                        responseCount={responseCount}
+                        onMount={() => setHasLoadedResponses(true)}
+                    />
+                )}
             </div>
         </div>
     );

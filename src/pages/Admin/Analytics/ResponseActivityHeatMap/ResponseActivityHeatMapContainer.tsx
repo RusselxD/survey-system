@@ -7,6 +7,7 @@ import {
     ResponseActivity,
 } from "../../../../utils/api/pages/analytics";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
+import DownloadExcelButton from "../../../../components/reusable/DownloadExcelButton";
 
 const viewOptions = [
     { label: "Hourly", value: "hourly" as const },
@@ -122,6 +123,18 @@ const ResponseActivityHeatMapContainer = () => {
 
     return (
         <div className="custom-container w-full sm:p-4 lg:p-5 dark:bg-base-300 bg-white relative">
+            <div className="absolute left-3 top-3 z-30">
+                <DownloadExcelButton
+                    data={dataset.labels.map((label, index) => ({
+                        [viewType === "hourly" ? "Hour" : "Day"]: label,
+                        "Response Count": dataset.responseCounts[index],
+                    }))}
+                    fileName={`Response-Activity-${
+                        viewType === "hourly" ? "Hourly" : "Daily"
+                    }`}
+                    sheetName="Activity"
+                />
+            </div>
             <div className="absolute right-3 top-3 z-30">
                 <ViewDropdown
                     selectedView={viewType}

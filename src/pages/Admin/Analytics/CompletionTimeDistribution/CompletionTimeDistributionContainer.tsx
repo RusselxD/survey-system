@@ -6,6 +6,7 @@ import {
 import { useAuth } from "../../../../context/AuthContext";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
 import CompletionTimeDistChart from "./CompletionTimeDistChart";
+import DownloadExcelButton from "../../../../components/reusable/DownloadExcelButton";
 
 const CompletionTimeDistributionContainer = (): React.JSX.Element => {
     const { toastError } = useAuth();
@@ -45,7 +46,20 @@ const CompletionTimeDistributionContainer = (): React.JSX.Element => {
     }
 
     return (
-        <div className="custom-container flex-1 sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
+        <div className="custom-container flex-1 sm:p-4 lg:p-5 dark:bg-base-300 bg-white relative">
+            <div className="absolute left-3 top-3 z-10">
+                <DownloadExcelButton
+                    data={completionTimeDistData.timeRanges.map(
+                        (timeRange, index) => ({
+                            "Time Range": timeRange,
+                            "Response Count":
+                                completionTimeDistData.responseCounts[index],
+                        })
+                    )}
+                    fileName="Completion-Time-Distribution"
+                    sheetName="Completion Times"
+                />
+            </div>
             <CompletionTimeDistChart dataset={completionTimeDistData} />
         </div>
     );

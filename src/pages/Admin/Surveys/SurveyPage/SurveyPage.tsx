@@ -1,15 +1,17 @@
 import { Link, useParams } from "react-router-dom";
 import SurveyMainDetails from "./SurveyMainDetails/SurveyMainDetails";
-import { ArrowLeft, Copy } from "lucide-react";
+import { ArrowLeft, Copy, FileDown } from "lucide-react";
 import QuestionsAndResponses from "./QuestionsAndResponses/QuestionsAndResponses";
 import { useAuth } from "../../../../context/AuthContext";
+import { useState } from "react";
 
 const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:5173";
 
 const SurveyPage = () => {
     const { id } = useParams<{ id: string }>();
-
     const { toastSuccess } = useAuth();
+    const [exportTrigger, setExportTrigger] = useState<number>(0);
+    const [isExporting, setIsExporting] = useState<boolean>(false);
 
     const handleCopyLink = () => {
         const text = `${appUrl}/s/${id}`;
@@ -34,16 +36,39 @@ const SurveyPage = () => {
                     <ArrowLeft size={20} />
                     <span>Back to Surveys</span>
                 </Link>
-                <button
-                    onClick={() => handleCopyLink()}
-                    className="flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 px-4 py-3 text-white rounded-lg"
-                >
-                    <Copy size={20} />
-                    <span>Public Link</span>
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setExportTrigger((prev) => prev + 1)}
+                        disabled={isExporting}
+                        className="flex items-center gap-2 text-sm bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed px-4 py-3 text-white rounded-lg transition-colors"
+                    >
+                        {isExporting ? (
+                            <>
+                                <span className="loading loading-spinner loading-sm"></span>
+                                <span>Generating...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FileDown size={20} />
+                                <span>Export PDF</span>
+                            </>
+                        )}
+                    </button>
+                    <button
+                        onClick={() => handleCopyLink()}
+                        className="flex items-center gap-2 text-sm bg-blue-600 hover:bg-blue-700 px-4 py-3 text-white rounded-lg"
+                    >
+                        <Copy size={20} />
+                        <span>Public Link</span>
+                    </button>
+                </div>
             </div>
-            <SurveyMainDetails id={id} />
-            <QuestionsAndResponses id={id} />
+            <SurveyMainDetails
+                id={id!}
+                exportTrigger={exportTrigger}
+                setIsExporting={setIsExporting}
+            />
+            <QuestionsAndResponses id={id!} />
         </div>
     );
 };

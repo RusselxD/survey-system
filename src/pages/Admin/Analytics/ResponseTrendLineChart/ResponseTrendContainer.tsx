@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 import ResponseTrend from "./ResponseTrend";
 import {
@@ -7,6 +7,8 @@ import {
 } from "../../../../utils/api/pages/analytics";
 import { useAuth } from "../../../../context/AuthContext";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
+import DownloadChartButton from "../../../../components/reusable/DownloadChartButton";
+import { exportChartToPDF } from "../../../../utils/exportChartToPDF";
 
 interface TimeRange {
     label: string;
@@ -92,11 +94,74 @@ const ResponseTrendContainer = (): React.JSX.Element => {
         useState<ResponseTrends | null>(null);
     const [isFetching, setIsFetching] = useState<boolean>(true);
     const [refetch, setRefetch] = useState<number>(0);
+    const [pdfMode, setPdfMode] = useState<boolean>(false);
     const { toastError } = useAuth();
+    const chartRef = useRef<HTMLDivElement>(null);
 
     const [selectedRange, setSelectedRange] = useState<TimeRange>(
         timeRanges[0]
     );
+
+    const handleExportPDF = async (): Promise<void> => {
+        if (!chartRef.current || !responseTrendData) return;
+
+        try {
+            // Enable PDF mode to switch to light colors
+            setPdfMode(true);
+
+            // Wait for re-render with new colors
+            await new Promise((resolve) => setTimeout(resolve, 100));
+
+            if (!chartRef.current) return;
+
+            // Calculate statistics
+            const totalResponses = responseTrendData.responseCounts.reduce(
+                (sum: number, count: number) => sum + count,
+                0
+            );
+            const avgResponsesPerPeriod = (
+                totalResponses / responseTrendData.responseCounts.length
+            ).toFixed(1);
+            const maxResponses = Math.max(...responseTrendData.responseCounts);
+            const minResponses = Math.min(...responseTrendData.responseCounts);
+
+            await exportChartToPDF({
+                chartRef,
+                fileName: "Response-Trend",
+                title: "Response Trends Analysis",
+                subtitle: `Data for the last ${selectedRange.label} • Generated from Analytics Dashboard`,
+                additionalDetails: [
+                    {
+                        label: "Total Responses",
+                        value: totalResponses.toLocaleString(),
+                    },
+                    {
+                        label: "Average per Period",
+                        value: avgResponsesPerPeriod,
+                    },
+                    {
+                        label: "Peak Responses",
+                        value: maxResponses.toLocaleString(),
+                    },
+                    {
+                        label: "Lowest Responses",
+                        value: minResponses.toLocaleString(),
+                    },
+                    { label: "Time Range", value: selectedRange.label },
+                    {
+                        label: "Data Points",
+                        value: responseTrendData.responseCounts.length,
+                    },
+                ],
+            });
+        } catch (error) {
+            console.error("Error exporting PDF:", error);
+            alert("Failed to export PDF. Please try again.");
+        } finally {
+            // Restore normal mode
+            setPdfMode(false);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -133,6 +198,13 @@ const ResponseTrendContainer = (): React.JSX.Element => {
 
     return (
         <div className="custom-container h-[30rem] relative w-full sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
+            <div className="absolute left-3 top-3 z-10">
+                <DownloadChartButton
+                    chartRef={chartRef}
+                    fileName="Response-Trend"
+                    onExport={handleExportPDF}
+                />
+            </div>
             <div className="absolute right-3 top-3">
                 <TimeRangeDropdown
                     timeRanges={timeRanges}
@@ -140,11 +212,14 @@ const ResponseTrendContainer = (): React.JSX.Element => {
                     setSelectedRange={setSelectedRange}
                 />
             </div>
-            <ResponseTrend
-                dataset={responseTrendData}
-                duration={selectedRange.label}
-                xAxisLabel={selectedRange.granularity + "s"}
-            />
+            <div ref={chartRef} className="h-full">
+                <ResponseTrend
+                    dataset={responseTrendData}
+                    duration={selectedRange.label}
+                    xAxisLabel={selectedRange.granularity + "s"}
+                    pdfMode={pdfMode}
+                />
+            </div>
         </div>
     );
 };

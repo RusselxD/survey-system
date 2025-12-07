@@ -6,6 +6,7 @@ import {
 import { useAuth } from "../../../../context/AuthContext";
 import { ClipboardList } from "lucide-react";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
+import DownloadExcelButton from "../../../../components/reusable/DownloadExcelButton";
 
 const SurveysRankedByResponseCountContainer = (): React.JSX.Element => {
     const { toastError } = useAuth();
@@ -49,7 +50,18 @@ const SurveysRankedByResponseCountContainer = (): React.JSX.Element => {
     };
 
     return (
-        <div className="custom-container w-[40%] overflow-x-hidden sm:p-4 lg:p-5  dark:bg-base-300 bg-white">
+        <div className="custom-container w-[40%] overflow-x-hidden sm:p-4 lg:p-5  dark:bg-base-300 bg-white relative">
+            <div className="absolute right-3 top-3 z-10">
+                <DownloadExcelButton
+                    data={surveys.map((survey, index) => ({
+                        Rank: index + 1,
+                        "Survey Title": survey.title,
+                        "Response Count": survey.responseCount,
+                    }))}
+                    fileName="Surveys-Ranked-By-Response-Count"
+                    sheetName="Response Counts"
+                />
+            </div>
             <h1 className="flex items-center gap-2 mb-2">
                 <ClipboardList className="text-green-400" />
                 <span className="custom-primary-txt font-semibold text-sm">
