@@ -76,7 +76,7 @@ const ResponseContainer = ({
 
             <div className="flex items-center w-fit gap-3 mb-2">
                 <h1 className="custom-primary-txt font-medium">
-                    Response {responseNumber}
+                    Response {responseNumber.toLocaleString()}
                 </h1>
                 <span className="text-xs px-2 py-0.5 bg-green-500/20 text-green-400 rounded border border-green-500/30">
                     Completed

@@ -83,9 +83,14 @@ export const surveyPageAPI = {
             `ViewSurveyDetails/${surveyId}/QuestionAnalytics`
         ),
 
-    getResponses: (surveyId: string, page = 1, pageSize = 10) =>
+    getResponses: (
+        surveyId: string,
+        page = 1,
+        pageSize = 10,
+        sortOrder = "desc"
+    ) =>
         apiClient.get<PaginatedResponses>(
-            `ViewSurveyDetails/${surveyId}/Responses?page=${page}&pageSize=${pageSize}`
+            `ViewSurveyDetails/${surveyId}/Responses?page=${page}&pageSize=${pageSize}&sortOrder=${sortOrder}`
         ),
 
     getResponseAnswers: (responseId: string) =>

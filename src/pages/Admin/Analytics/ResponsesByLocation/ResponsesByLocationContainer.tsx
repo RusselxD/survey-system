@@ -7,6 +7,7 @@ import {
     ResponsesByLocation as ResponsesByLocationData,
 } from "../../../../utils/api/pages/analytics";
 import FailedToLoadComponent from "../../../../components/reusable/FailedToLoadComponent";
+import DownloadExcelButton from "../../../../components/reusable/DownloadExcelButton";
 
 interface LocationOption {
     label: string;
@@ -128,6 +129,19 @@ const ResponsesByLocationContainer = (): React.JSX.Element => {
 
     return (
         <div className="custom-container relative flex-1 sm:p-4 lg:p-5 dark:bg-base-300 bg-white">
+            <div className="absolute left-3 top-3 z-10">
+                <DownloadExcelButton
+                    data={responsesByLocationData.locations.map(
+                        (location, index) => ({
+                            Location: location,
+                            "Response Count":
+                                responsesByLocationData.responseCounts[index],
+                        })
+                    )}
+                    fileName="Responses-By-Location"
+                    sheetName="Locations"
+                />
+            </div>
             <div className="absolute right-3 top-3">
                 <LocationFilterDropdown
                     selectedOption={selectedOption}
