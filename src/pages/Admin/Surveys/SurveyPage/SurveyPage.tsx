@@ -44,7 +44,7 @@ const SurveyPage = () => {
                     >
                         {isExporting ? (
                             <>
-                                <span className="loading loading-spinner loading-sm"></span>
+                                <span className="loading loading-bars loading-sm"></span>
                                 <span>Generating...</span>
                             </>
                         ) : (

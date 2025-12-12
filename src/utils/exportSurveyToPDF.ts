@@ -55,6 +55,18 @@ export const exportSurveyToPDF = ({
     const contentWidth = pageWidth - 2 * margin;
     let yPosition = margin;
 
+    // Pre-format date once
+    const formattedDate = new Date(updatedAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+    const currentDate = new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+
     const checkPageBreak = (requiredSpace: number): void => {
         if (yPosition + requiredSpace > pageHeight - margin) {
             pdf.addPage();
@@ -62,10 +74,20 @@ export const exportSurveyToPDF = ({
         }
     };
 
+    // Set common text properties once
+    const setHeaderStyle = () => {
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(0, 0, 0);
+    };
+
+    const setNormalStyle = () => {
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(60, 60, 60);
+    };
+
     // Header
     pdf.setFontSize(18);
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(0, 0, 0);
+    setHeaderStyle();
     const titleLines = pdf.splitTextToSize(title, contentWidth);
     titleLines.forEach((line: string) => {
         checkPageBreak(10);
@@ -93,23 +115,17 @@ export const exportSurveyToPDF = ({
 
     // Survey Details Section
     pdf.setFontSize(12);
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(0, 0, 0);
+    setHeaderStyle();
     checkPageBreak(8);
     pdf.text("Survey Details", margin, yPosition);
     yPosition += 8;
 
     pdf.setFontSize(10);
-    pdf.setFont("helvetica", "normal");
-    pdf.setTextColor(60, 60, 60);
+    setNormalStyle();
 
     const details = [
         `Created by: ${createdBy}`,
-        `Last updated: ${new Date(updatedAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        })}`,
+        `Last updated: ${formattedDate}`,
     ];
 
     if (locationName) details.push(`Location: ${locationName}`);
@@ -125,14 +141,12 @@ export const exportSurveyToPDF = ({
 
     // Survey Metrics Section
     pdf.setFontSize(12);
-    pdf.setFont("helvetica", "bold");
-    pdf.setTextColor(0, 0, 0);
+    setHeaderStyle();
     checkPageBreak(8);
     pdf.text("Survey Metrics", margin, yPosition);
     yPosition += 8;
 
     pdf.setFontSize(10);
-    pdf.setFont("helvetica", "normal");
 
     const metrics = [
         {
@@ -187,8 +201,7 @@ export const exportSurveyToPDF = ({
     if (questions && questions.length > 0) {
         checkPageBreak(15);
         pdf.setFontSize(12);
-        pdf.setFont("helvetica", "bold");
-        pdf.setTextColor(0, 0, 0);
+        setHeaderStyle();
         pdf.text("Questions", margin, yPosition);
         yPosition += 10;
 
@@ -197,8 +210,7 @@ export const exportSurveyToPDF = ({
 
             // Question number and text
             pdf.setFontSize(10);
-            pdf.setFont("helvetica", "bold");
-            pdf.setTextColor(0, 0, 0);
+            setHeaderStyle();
             const questionTitle = `Q${index + 1}. ${question.questionText}`;
             const questionLines = pdf.splitTextToSize(
                 questionTitle,
@@ -446,13 +458,7 @@ export const exportSurveyToPDF = ({
         });
     }
 
-    // Footer on last page
-    const currentDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
-
+    // Footer on all pages
     const totalPages = pdf.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
