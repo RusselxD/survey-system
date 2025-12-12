@@ -45,6 +45,8 @@ interface AuthContextType {
     textColor: string;
     gridColor: string;
     isDark: boolean;
+    startExport: () => void;
+    endExport: () => void;
 }
 
 interface AuthProviderProps {
@@ -57,6 +59,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [permissions, setPermissions] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [activeExports, setActiveExports] = useState<number>(0);
+
+    const startExport = () => setActiveExports((prev) => prev + 1);
+    const endExport = () => setActiveExports((prev) => Math.max(0, prev - 1));
 
     const hasPermission = (permissionName: string): boolean => {
         return permissions.includes(permissionName);
@@ -271,9 +277,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 textColor,
                 gridColor,
                 isDark,
+                startExport,
+                endExport,
             }}
         >
             {children}
+            {activeExports > 0 && (
+                <div className="fixed bottom-10 right-10 z-[100]">
+                    <div className="bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-xl rounded-xl p-5 flex items-center gap-4 min-w-[300px]">
+                        <span className="loading loading-spinner loading-md text-blue-600 dark:text-blue-400"></span>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                Generating pdf report
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {activeExports > 1
+                                    ? `Generating ${activeExports} reports...`
+                                    : "Please wait while we generate the report..."}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthContext.Provider>
     );
 }

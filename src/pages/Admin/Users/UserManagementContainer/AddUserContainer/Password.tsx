@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TextInput from "../../../../../components/TextInput";
+import { AlertTriangle } from "lucide-react";
 
 interface FormErrors {
     firstName?: string;
@@ -94,7 +95,7 @@ const Password = ({
                         setVal={setPassword}
                         label="Password"
                         withLabel={true}
-                        type="password"
+                        type="text"
                         disabled={passwordMode === "random"}
                     />
                     {errors?.password && (
@@ -109,7 +110,7 @@ const Password = ({
                         setVal={setConfirmPassword}
                         label="Confirm Password"
                         withLabel={true}
-                        type="password"
+                        type="text"
                         disabled={passwordMode === "random"}
                     />
                     {errors?.confirmPassword && (
@@ -118,6 +119,15 @@ const Password = ({
                         </p>
                     )}
                 </div>
+            </div>
+
+            {/* Warning Message */}
+            <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-md flex gap-2 items-start">
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                    Important: Copy this password now. For security reasons, it
+                    will not be shown again after the user is created.
+                </p>
             </div>
 
             {/* Require password change checkbox */}

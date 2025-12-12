@@ -27,7 +27,7 @@ const SurveyPage = () => {
     };
 
     return (
-        <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1">
+        <div className="p-0 sm:p-1 md:p-3 dark:bg-base-100 bg-gray-100/70 flex-1 relative">
             <div className="flex items-center justify-between mb-2">
                 <Link
                     to="/admin/surveys"
@@ -40,19 +40,10 @@ const SurveyPage = () => {
                     <button
                         onClick={() => setExportTrigger((prev) => prev + 1)}
                         disabled={isExporting}
-                        className="flex items-center gap-2 text-sm bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed px-4 py-3 text-white rounded-lg transition-colors"
+                        className="flex items-center gap-2 text-sm bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-3 text-white rounded-lg transition-colors"
                     >
-                        {isExporting ? (
-                            <>
-                                <span className="loading loading-bars loading-sm"></span>
-                                <span>Generating...</span>
-                            </>
-                        ) : (
-                            <>
-                                <FileDown size={20} />
-                                <span>Export PDF</span>
-                            </>
-                        )}
+                        <FileDown size={20} />
+                        <span>Export PDF</span>
                     </button>
                     <button
                         onClick={() => handleCopyLink()}
