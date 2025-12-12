@@ -40,6 +40,14 @@ interface QuestionAnalytics {
     analyticsData: string;
 }
 
+interface PaginatedQuestionAnalytics {
+    data: QuestionAnalytics[];
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    hasMore: boolean;
+}
+
 interface ResponseItem {
     id: string;
     respondentName: string;
@@ -81,6 +89,11 @@ export const surveyPageAPI = {
     getQuestionAnalytics: (surveyId: string) =>
         apiClient.get<QuestionAnalytics[]>(
             `ViewSurveyDetails/${surveyId}/QuestionAnalytics`
+        ),
+
+    getQuestionAnalyticsPaginated: (surveyId: string, page = 1, pageSize = 5) =>
+        apiClient.get<PaginatedQuestionAnalytics>(
+            `ViewSurveyDetails/${surveyId}/QuestionAnalyticsPaginated?page=${page}&pageSize=${pageSize}`
         ),
 
     getResponses: (

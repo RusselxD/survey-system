@@ -134,127 +134,126 @@ const SurveyMainDetails = ({
                         };
 
                         // Parse analyticsData if it exists
-                        if (q.analyticsData) {
-                            try {
-                                const parsedData = JSON.parse(q.analyticsData);
+                        if (!q.analyticsData) {
+                            return baseQuestion;
+                        }
 
-                                // For Checkboxes (uses Options array)
-                                if (parsedData.Options) {
-                                    return {
-                                        ...baseQuestion,
-                                        options: parsedData.Options.map(
-                                            (opt: any) => ({
-                                                option: opt.Text,
-                                                count: opt.SelectionCount,
-                                                percentage: opt.SelectionRate,
-                                            })
-                                        ),
-                                    };
-                                }
+                        try {
+                            const parsedData = JSON.parse(q.analyticsData);
 
-                                // For Multiple Choice, Dropdown (uses Labels)
-                                if (
-                                    parsedData.Labels &&
-                                    parsedData.ResponseCounts
-                                ) {
-                                    return {
-                                        ...baseQuestion,
-                                        options: parsedData.Labels.map(
-                                            (label: string, idx: number) => ({
-                                                option: label,
-                                                count: parsedData
-                                                    .ResponseCounts[idx],
-                                                percentage:
-                                                    parsedData.ResponseRates[
-                                                        idx
-                                                    ],
-                                            })
-                                        ),
-                                    };
-                                }
+                            // For Checkboxes (uses Options array)
+                            if (parsedData.Options) {
+                                return {
+                                    ...baseQuestion,
+                                    options: parsedData.Options.map(
+                                        (opt: any) => ({
+                                            option: opt.Text,
+                                            count: opt.SelectionCount,
+                                            percentage: opt.SelectionRate,
+                                        })
+                                    ),
+                                };
+                            }
 
-                                // For Linear Scale
-                                if (
-                                    parsedData.Distribution &&
-                                    parsedData.Average !== undefined
-                                ) {
-                                    return {
-                                        ...baseQuestion,
-                                        distribution:
-                                            parsedData.Distribution.map(
-                                                (d: any) => ({
-                                                    value: d.Value,
-                                                    count: d.Count,
-                                                    percentage: d.Percentage,
+                            // For Multiple Choice, Dropdown (uses Labels)
+                            if (
+                                parsedData.Labels &&
+                                parsedData.ResponseCounts
+                            ) {
+                                return {
+                                    ...baseQuestion,
+                                    options: parsedData.Labels.map(
+                                        (label: string, idx: number) => ({
+                                            option: label,
+                                            count: parsedData.ResponseCounts[
+                                                idx
+                                            ],
+                                            percentage:
+                                                parsedData.ResponseRates[idx],
+                                        })
+                                    ),
+                                };
+                            }
+
+                            // For Linear Scale
+                            if (
+                                parsedData.Distribution &&
+                                parsedData.Average !== undefined
+                            ) {
+                                return {
+                                    ...baseQuestion,
+                                    distribution: parsedData.Distribution.map(
+                                        (d: any) => ({
+                                            value: d.Value,
+                                            count: d.Count,
+                                            percentage: d.Percentage,
+                                        })
+                                    ),
+                                    averageRating: parsedData.Average,
+                                };
+                            }
+
+                            // For Text/Paragraph (short_answer, paragraph)
+                            if (parsedData.CommonWords) {
+                                return {
+                                    ...baseQuestion,
+                                    commonWords: parsedData.CommonWords,
+                                    avgLength: parsedData.AvgLength,
+                                };
+                            }
+
+                            // For Grid (multiple_choice_grid & checkbox_grid)
+                            if (parsedData.Rows) {
+                                // Parse metadata to get row/column labels
+                                const metadata = q.questionMetadata
+                                    ? JSON.parse(q.questionMetadata)
+                                    : null;
+
+                                return {
+                                    ...baseQuestion,
+                                    rowData: parsedData.Rows.map(
+                                        (row: any, idx: number) => ({
+                                            rowText:
+                                                metadata?.rows?.[idx]?.text ||
+                                                row.RowText ||
+                                                `Row ${idx + 1}`,
+                                            columns: row.Columns.map(
+                                                (col: any) => ({
+                                                    count: col.Count,
+                                                    rate: col.Rate,
                                                 })
                                             ),
-                                        averageRating: parsedData.Average,
-                                    };
-                                }
-
-                                // For Text/Paragraph (short_answer, paragraph)
-                                if (parsedData.CommonWords) {
-                                    return {
-                                        ...baseQuestion,
-                                        commonWords: parsedData.CommonWords,
-                                        avgLength: parsedData.AvgLength,
-                                    };
-                                }
-
-                                // For Grid (multiple_choice_grid & checkbox_grid)
-                                if (parsedData.Rows) {
-                                    // Parse metadata to get row/column labels
-                                    const metadata = q.questionMetadata
-                                        ? JSON.parse(q.questionMetadata)
-                                        : null;
-
-                                    return {
-                                        ...baseQuestion,
-                                        rowData: parsedData.Rows.map(
-                                            (row: any, idx: number) => ({
-                                                rowText:
-                                                    metadata?.rows?.[idx]
-                                                        ?.text ||
-                                                    row.RowText ||
-                                                    `Row ${idx + 1}`,
-                                                columns: row.Columns.map(
-                                                    (col: any) => ({
-                                                        count: col.Count,
-                                                        rate: col.Rate,
-                                                    })
-                                                ),
-                                            })
-                                        ),
-                                        columnHeaders:
-                                            metadata?.columns?.map(
-                                                (c: any) => c.text
-                                            ) || [],
-                                    };
-                                }
-
-                                // For Date/Time
-                                if (
-                                    parsedData.MinDate ||
-                                    parsedData.MaxDate ||
-                                    parsedData.MinTime ||
-                                    parsedData.MaxTime
-                                ) {
-                                    return {
-                                        ...baseQuestion,
-                                        dateRange: {
-                                            minDate: parsedData.MinDate,
-                                            maxDate: parsedData.MaxDate,
-                                            minTime: parsedData.MinTime,
-                                            maxTime: parsedData.MaxTime,
-                                        },
-                                    };
-                                }
-                            } catch (error) {
-                                console.error(
-                                    "Error parsing analytics data:",
-                                    error
-                                );
+                                        })
+                                    ),
+                                    columnHeaders:
+                                        metadata?.columns?.map(
+                                            (c: any) => c.text
+                                        ) || [],
+                                };
                             }
+
+                            // For Date/Time
+                            if (
+                                parsedData.MinDate ||
+                                parsedData.MaxDate ||
+                                parsedData.MinTime ||
+                                parsedData.MaxTime
+                            ) {
+                                return {
+                                    ...baseQuestion,
+                                    dateRange: {
+                                        minDate: parsedData.MinDate,
+                                        maxDate: parsedData.MaxDate,
+                                        minTime: parsedData.MinTime,
+                                        maxTime: parsedData.MaxTime,
+                                    },
+                                };
+                            }
+                        } catch (error) {
+                            console.error(
+                                "Error parsing analytics data:",
+                                error
+                            );
                         }
 
                         return baseQuestion;

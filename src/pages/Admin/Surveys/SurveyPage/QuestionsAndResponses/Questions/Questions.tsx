@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { surveyPageAPI } from "../../../../../../utils/api/pages/surveyPage";
 import MultipleChoiceAnalytics from "./types/MultipleChoiceAnalytics";
 import CheckboxesAnalytics from "./types/CheckboxesAnalytics";
@@ -11,6 +11,13 @@ interface QuestionAnalytic {
     questionId: number;
     questionType: string;
     questionText: string;
+    ordinal: number;
+    required: boolean;
+    analyticsData: string;
+    questionMetadata: string;
+    totalResponses: number;
+    answeredCount: number;
+    responseRate: number;
     [key: string]: any;
 }
 
@@ -20,24 +27,71 @@ interface QuestionsProps {
 
 const Questions = ({ id }: QuestionsProps): React.JSX.Element => {
     const [questionAnalytics, setQuestionAnalytics] = useState<
-        QuestionAnalytic[] | null
-    >(null);
+        QuestionAnalytic[]
+    >([]);
+    const [page, setPage] = useState<number>(1);
+    const [hasMore, setHasMore] = useState<boolean>(true);
     const [isFetching, setIsFetching] = useState<boolean>(true);
+    const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+
+    const observerTarget = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsFetching(true);
-                const res = await surveyPageAPI.getQuestionAnalytics(id);
-                setQuestionAnalytics(res.data);
+                // Use different loading state for initial vs pagination
+                if (page === 1) {
+                    setIsFetching(true);
+                } else {
+                    setIsLoadingMore(true);
+                }
+
+                const res = await surveyPageAPI.getQuestionAnalyticsPaginated(
+                    id,
+                    page,
+                    5
+                );
+                setQuestionAnalytics((prev) => [...prev, ...res.data.data]);
+                setHasMore(res.data.hasMore);
             } catch (error) {
                 console.error("Failed to fetch question analytics:", error);
             } finally {
                 setIsFetching(false);
+                setIsLoadingMore(false);
             }
         };
-        fetchData();
-    }, [id]);
+
+        if (hasMore) {
+            fetchData();
+        }
+    }, [id, page]);
+
+    // Infinite scroll observer
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (
+                    entries[0].isIntersecting &&
+                    hasMore &&
+                    !isLoadingMore &&
+                    !isFetching
+                ) {
+                    setPage((prev) => prev + 1);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => {
+            if (observerTarget.current) {
+                observer.unobserve(observerTarget.current);
+            }
+        };
+    }, [hasMore, isLoadingMore, isFetching]);
 
     const renderQuestionAnalytics = (
         question: QuestionAnalytic
@@ -110,7 +164,8 @@ const Questions = ({ id }: QuestionsProps): React.JSX.Element => {
         }
     };
 
-    if (isFetching) {
+    // Initial loading skeleton
+    if (isFetching && page === 1) {
         return (
             <div className="space-y-3">
                 <div className="skeleton w-full h-32"></div>
@@ -120,7 +175,7 @@ const Questions = ({ id }: QuestionsProps): React.JSX.Element => {
         );
     }
 
-    if (!questionAnalytics || questionAnalytics.length === 0) {
+    if (questionAnalytics.length === 0 && !isFetching) {
         return (
             <div className="dark:bg-base-300 bg-white p-8 rounded-md border dark:border-slate-700 border-gray-300 text-center">
                 <p className="custom-sec-txt">
@@ -134,6 +189,23 @@ const Questions = ({ id }: QuestionsProps): React.JSX.Element => {
         <div className="space-y-4">
             {questionAnalytics.map((question: QuestionAnalytic) =>
                 renderQuestionAnalytics(question)
+            )}
+
+            {/* Loading indicator for pagination */}
+            {isLoadingMore && (
+                <div className="space-y-3">
+                    <div className="skeleton w-full h-32"></div>
+                    <div className="skeleton w-full h-32"></div>
+                </div>
+            )}
+
+            {/* Invisible element to trigger loading */}
+            {hasMore && <div ref={observerTarget} className="h-4" />}
+
+            {!hasMore && questionAnalytics.length > 0 && (
+                <p className="text-center text-gray-500 py-4">
+                    All questions loaded
+                </p>
             )}
         </div>
     );
