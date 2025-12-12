@@ -30,6 +30,13 @@ const SurveyCompleted = (): React.JSX.Element => {
 
             try {
                 setIsFetching(true);
+
+                // Verify survey completion status
+                if (!respondentsAPI.hasSurveyBeenCompleted(id)) {
+                    navigate(`/s/${id}/take`);
+                    return;
+                }
+
                 const res = await respondentsAPI.getSurveyPreviewDetails(id);
                 setSurvey(res.data);
             } catch (error) {

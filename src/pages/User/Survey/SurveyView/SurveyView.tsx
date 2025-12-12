@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { ListChecks, ArrowRight } from "lucide-react";
+import { ListChecks, ArrowRight, Shield, FileText } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { respondentsAPI } from "../../../../utils/api/respondents";
 import FailedToLoad from "../../../../components/reusable/FailedToLoad";
 import SurveyViewSkeleton from "./SurveyViewSkeleton";
 import SurveyArchivedMessage from "../../../../components/reusable/SurveyArchivedMessage";
 import { AxiosError } from "axios";
+import { settingsAPI } from "../../../../utils/api/pages/settingsPage";
 
 interface SurveyPreview {
     id: string;
@@ -27,6 +28,9 @@ const SurveyView = (): React.JSX.Element => {
     const navigate = useNavigate();
     const [isArchived, setIsArchived] = useState<boolean>(false);
 
+    const [consentText, setConsentText] = useState<string>("");
+    const [privacyText, setPrivacyText] = useState<string>("");
+
     useEffect(() => {
         const fetchSurveyData = async () => {
             if (!id) return;
@@ -46,6 +50,17 @@ const SurveyView = (): React.JSX.Element => {
                 } else {
                     await respondentsAPI.recordSurveyView(id);
                 }
+
+                const textsRes = await settingsAPI.getSystemSettings();
+
+                const consentSetting = textsRes.data.find(
+                    (s) => s.key === "consent_text"
+                );
+                const privacySetting = textsRes.data.find(
+                    (s) => s.key === "privacy_text"
+                );
+                setConsentText(consentSetting ? consentSetting.value : "");
+                setPrivacyText(privacySetting ? privacySetting.value : "");
 
                 setSurvey(res.data);
             } catch (error) {
@@ -113,39 +128,33 @@ const SurveyView = (): React.JSX.Element => {
                                     </span>
                                 </div>
 
-                                {/* Note Box */}
-                                <div className="dark:bg-gray-700 bg-gray-100 rounded-lg p-3 md:p-4 mb-3 md:mb-4">
-                                    <p className="text-sm md:text-base font-medium custom-sec-txt mb-2">
-                                        Note:
-                                    </p>
-                                    <ul className="text-xs md:text-sm custom-sec-txt space-y-1 md:space-y-2 list-disc pl-5 pr-2">
-                                        <li>Your responses are confidential</li>
-                                        {(survey.askName ||
-                                            survey.askEmail) && (
-                                            <li className="leading-5 md:leading-7">
-                                                Personal information you chose
-                                                to provide will be securely
-                                                stored and used solely for
-                                                survey administration purposes
-                                                in accordance with{" "}
-                                                <a
-                                                    href="https://privacy.gov.ph/data-privacy-act/"
-                                                    target="_blank"
-                                                    className="text-blue-500 hover:underline"
-                                                >
-                                                    data privacy regulations
-                                                </a>
-                                            </li>
-                                        )}
-                                        <li>
-                                            All data are encrypted and securely
-                                            stored
-                                        </li>
-                                        <li>
-                                            You can complete this survey at your
-                                            own pace
-                                        </li>
-                                    </ul>
+                                {/* Consent and Privacy Box */}
+                                <div className="dark:bg-gray-700 bg-gray-100 rounded-lg p-3 md:p-4 mb-3 md:mb-4 space-y-4">
+                                    <div className="flex gap-3">
+                                        <FileText className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h3 className="text-sm md:text-base font-semibold custom-primary-txt mb-1">
+                                                Data Consent
+                                            </h3>
+                                            <p className="text-xs md:text-sm custom-sec-txt leading-relaxed">
+                                                {consentText ||
+                                                    "By submitting this form, you consent to the collection and processing of your response."}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <Shield className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                        <div>
+                                            <h3 className="text-sm md:text-base font-semibold custom-primary-txt mb-1">
+                                                Privacy Policy
+                                            </h3>
+                                            <p className="text-xs md:text-sm custom-sec-txt leading-relaxed">
+                                                {privacyText ||
+                                                    "We value your privacy. Your responses are collected solely for service improvement and analytics purposes."}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Action Button */}

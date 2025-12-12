@@ -44,7 +44,7 @@ const SurveyMainDetails = ({
     exportTrigger,
     setIsExporting,
 }: SurveyMainDetailsProps): React.JSX.Element => {
-    const { toastError, toastSuccess } = useAuth();
+    const { toastError, toastSuccess, startExport, endExport } = useAuth();
     const navigate = useNavigate();
 
     const [surveyMainDetails, setSurveyMainDetails] =
@@ -117,6 +117,7 @@ const SurveyMainDetails = ({
         const handleExport = async () => {
             if (exportTrigger && exportTrigger > 0 && surveyMainDetails) {
                 if (setIsExporting) setIsExporting(true);
+                startExport();
                 try {
                     // Fetch questions data
                     const questionsRes =
@@ -276,6 +277,7 @@ const SurveyMainDetails = ({
                     toastError("Failed to export PDF. Please try again.");
                 } finally {
                     if (setIsExporting) setIsExporting(false);
+                    endExport();
                 }
             }
         };
