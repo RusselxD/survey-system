@@ -47,6 +47,9 @@ const SurveyView = (): React.JSX.Element => {
 
                 if (res.data.status === "archived") {
                     setIsArchived(true);
+                } else if (res.data.status === "draft") {
+                    navigate("/not-found");
+                    return;
                 } else {
                     await respondentsAPI.recordSurveyView(id);
                 }

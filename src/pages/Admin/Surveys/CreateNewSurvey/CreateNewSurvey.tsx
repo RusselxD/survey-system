@@ -225,6 +225,7 @@ const CreateNewSurvey = (): React.JSX.Element => {
             );
             navigate("/admin/surveys");
         } catch (error) {
+            console.log(error);
             const errorMessage =
                 error instanceof Error
                     ? error.message
